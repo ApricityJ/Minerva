@@ -21,15 +21,16 @@ namespace Minerva
             ModifyInMemory.ActivateMemoryPatching();
 
             Options options = new Options();
-
             Parser.Default.ParseArguments<Options>(args)
                    .WithParsed<Options>(o =>
                    {
                        Env.Instance.Initialize(o.ReportDir);
                    });
 
-            ProjectPlan projectPlan = new ProjectPlan();
-            projectPlan.CompareWithWorkReport().AppendToProjectPlan();
+
+            WorkReport report = new WorkReport().Initalize();
+            ProjectPlan plan = new ProjectPlan();
+            plan.CompareWithWorkReport(report.WorkReportList).AppendToProjectPlan();
         }
 
 

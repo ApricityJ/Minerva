@@ -12,7 +12,6 @@ namespace Minerva.Report
         public List<WorkReportItem> WorkReportDivision2nd { get; set; }
         public List<WorkReportItem> WorkReportDivision3rd { get; set; }
         public List<WorkReportItem> WorkReportDivisionData { get; set; }
-
         public List<WorkReportItem> WorkReportList { get; set; }
 
 
@@ -26,14 +25,10 @@ namespace Minerva.Report
 
         public WorkReport Initalize()
         {
-            WorkReportDivision1st = new ExcelDesolator<WorkReportItem>(Env.Instance.ReportDivsion1st)
-                .ToEntityList(0, typeof(WorkReportItem));
-            WorkReportDivision2nd = new ExcelDesolator<WorkReportItem>(Env.Instance.ReportDivsion2nd)
-                .ToEntityList(0, typeof(WorkReportItem));
-            WorkReportDivision3rd = new ExcelDesolator<WorkReportItem>(Env.Instance.ReportDivsion3rd)
-                .ToEntityList(0, typeof(WorkReportItem));
-            WorkReportDivisionData = new ExcelDesolator<WorkReportItem>(Env.Instance.ReportDivsionData)
-                .ToEntityList(0, typeof(WorkReportItem));
+            WorkReportDivision1st = ToWorkReport(Env.Instance.ReportDivsion1st);
+            WorkReportDivision2nd = ToWorkReport(Env.Instance.ReportDivsion2nd);
+            WorkReportDivision3rd = ToWorkReport(Env.Instance.ReportDivsion3rd);
+            WorkReportDivisionData = ToWorkReport(Env.Instance.ReportDivsionData);
             WorkReportList = WorkReportDivision1st
                 .Concat(WorkReportDivision2nd)
                 .Concat(WorkReportDivision3rd)
@@ -42,14 +37,19 @@ namespace Minerva.Report
             return this;
         }
 
+        private bool IsProjectWork(WorkReportItem item)
+        {
+            return item.Type.ToString().Contains("项目");
+        }
+
         private List<WorkReportItem> ToWorkReport(string path)
         {
             List<WorkReportItem> workReportList = new ExcelDesolator<WorkReportItem>(path)
-                .ToEntityList(0, typeof(WorkReportItem));
+                .ToEntityList(0, 2, typeof(WorkReportItem));
 
-            //workReportList = workReportList.Where()
-
-            return workReportList;
+            return workReportList
+                .Where(workReportItem => IsProjectWork(workReportItem))
+                .ToList();
         }
 
 

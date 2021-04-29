@@ -12,7 +12,7 @@ namespace Minerva.Report
         AgileTechProject, 
         ImportantRequirement, 
         RegularRequirement, 
-        DataMiningProject, 
+        DataMiningProject,
         TestProject, 
         Other
     }

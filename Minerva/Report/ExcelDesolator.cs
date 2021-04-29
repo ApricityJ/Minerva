@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Aspose.Cells;
 using System.Reflection;
 using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace Minerva.Report
 {
@@ -23,6 +24,11 @@ namespace Minerva.Report
             return ToEntityList(index, 0, type);
         }
 
+        private bool IsDigit(string s)
+        {
+            return Regex.IsMatch(s, @"^[+-]?\d*$");
+        }
+
         public List<T> ToEntityList(int index, int skip, Type type)
         {
             List<T> entityList = new List<T>();
@@ -30,21 +36,33 @@ namespace Minerva.Report
             for (int i = skip; i <= sheet.Cells.MaxRow; i++)
             {
                 Row row = sheet.Cells.GetRow(i);
-                entityList.Add(ToEntity(row, type));
+                //Exit when first cell values is NOT Numeric 
+                if(IsDigit(row[0].StringValue))
+                {
+                    entityList.Add(ToEntity(row, type));
+                }
+                else
+                {
+                    break;
+                }
             }
             return entityList;
         }
 
         private T ToEntity(Row row, Type type)
         {
-            PropertyInfo[] properties = type.GetProperties();
+            //PropertyInfo[] properties = type.GetProperties();
             object entity = Activator.CreateInstance(type);
             Dictionary<int, string> classMap = ClassMapper.Instance.ToClassMap(type);
             foreach (KeyValuePair<int, string> pair in classMap)
             {
-                string value = row[pair.Key].Value.ToString().Trim();
+                object value = row[pair.Key].Value;
+                if(null == value)
+                {
+                    value = "";
+                }
                 string property = pair.Value;
-                SetValue(entity, property, value);
+                SetValue(entity, property, value.ToString().Trim());
             }
             return (T)entity;
         }
@@ -107,7 +125,6 @@ namespace Minerva.Report
 
         public void SetCellValues(int sheetIndex, int rowIndex, int columnIndex, List<T> entityList)
         {
-
             object o, value;
             PropertyInfo[] properties;
             for (int i = 0; i < entityList.Count; i++)
@@ -121,6 +138,8 @@ namespace Minerva.Report
                 }
             }
 
+            workbook.Save(reportPath);
+
         }
 
         private object ToObjectValue(string name, object obj)
@@ -129,6 +148,11 @@ namespace Minerva.Report
                 .Where(p => p.Name == name)
                 .First()
                 .GetValue(obj, null);
+
+            if (null == value)
+            {
+                return "";
+            }
 
             if (value.GetType().GetTypeInfo().BaseType == typeof(Enum))
             {

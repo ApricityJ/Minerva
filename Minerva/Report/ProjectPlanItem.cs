@@ -13,15 +13,15 @@ namespace Minerva.Report
         public int Sequence { get; set; }
         public string ProjectName { get; set; }
         public string RequirementDepartment { get; set; }
-        public InnovationType InnovationType { get; set; }
+        public string InnovationType { get; set; }
         public string Breif { get; set; }
         public string YearOfApproval { get; set; }
         public string DateOfRelease { get; set; }
-        public ProjectType ProjectType { get; set; }
+        public string ProjectType { get; set; }
         public string Budget { get; set; }
         public string IsDigitalTransformation { get; set; }
         public string Status { get; set; }
-        public Division HostDivision { get; set; }
+        public string HostDivision { get; set; }
         public string ResponsiblePersonnel { get; set; }
         public string MotivationalSuggestion { get; set; }
 
