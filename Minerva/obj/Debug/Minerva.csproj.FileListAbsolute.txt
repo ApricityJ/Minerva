@@ -1,0 +1,14 @@
+D:\workspace\vs\Minerva\Minerva\Minerva\bin\Debug\Minerva.exe.config
+D:\workspace\vs\Minerva\Minerva\Minerva\bin\Debug\Minerva.exe
+D:\workspace\vs\Minerva\Minerva\Minerva\bin\Debug\Minerva.pdb
+D:\workspace\vs\Minerva\Minerva\Minerva\bin\Debug\Aspose.Cells.dll
+D:\workspace\vs\Minerva\Minerva\Minerva\bin\Debug\Aspose.Words.dll
+D:\workspace\vs\Minerva\Minerva\Minerva\bin\Debug\Aspose.Cells.xml
+D:\workspace\vs\Minerva\Minerva\Minerva\bin\Debug\Aspose.Words.xml
+D:\workspace\vs\Minerva\Minerva\Minerva\obj\Debug\Minerva.csprojAssemblyReference.cache
+D:\workspace\vs\Minerva\Minerva\Minerva\obj\Debug\Minerva.csproj.CoreCompileInputs.cache
+D:\workspace\vs\Minerva\Minerva\Minerva\obj\Debug\Minerva.csproj.CopyComplete
+D:\workspace\vs\Minerva\Minerva\Minerva\obj\Debug\Minerva.exe
+D:\workspace\vs\Minerva\Minerva\Minerva\obj\Debug\Minerva.pdb
+D:\workspace\vs\Minerva\Minerva\Minerva\bin\Debug\CommandLine.dll
+D:\workspace\vs\Minerva\Minerva\Minerva\bin\Debug\CommandLine.xml
