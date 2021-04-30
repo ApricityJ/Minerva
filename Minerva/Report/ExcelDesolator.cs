@@ -9,19 +9,33 @@ namespace Minerva.Report
 {
     class ExcelDesolator<T>
     {
-        private string reportPath;
-        private Workbook workbook;
+        private readonly string excelPath;
+        private readonly Workbook workbook;
+        private int sheetIndex = 0;
+        private int skipRows = 0;
 
 
-        public ExcelDesolator(string reportPath)
+        public ExcelDesolator(string excelPath)
         {
-            this.reportPath = reportPath;
-            workbook = new Workbook(this.reportPath);
+            this.excelPath = excelPath;
+            workbook = new Workbook(this.excelPath);
         }
 
-        public List<T> ToEntityList(int index, Type type)
+        public ExcelDesolator<T> SelectSheetAt(int sheetIndex)
         {
-            return ToEntityList(index, 0, type);
+            this.sheetIndex = sheetIndex;
+            return this;
+        }
+
+        public ExcelDesolator<T> Skip(int skipRows)
+        {
+            this.skipRows = skipRows;
+            return this;
+        }
+
+        public List<T> ToEntityList(Type type)
+        {
+            return ToEntityList(sheetIndex, skipRows, type);
         }
 
         private bool IsDigit(string s)
@@ -32,12 +46,14 @@ namespace Minerva.Report
         public List<T> ToEntityList(int index, int skip, Type type)
         {
             List<T> entityList = new List<T>();
+            
             Worksheet sheet = workbook.Worksheets[index];
             for (int i = skip; i <= sheet.Cells.MaxRow; i++)
             {
                 Row row = sheet.Cells.GetRow(i);
-                //Exit when first cell values is NOT Numeric 
-                if(IsDigit(row[0].StringValue))
+                //exit when first cell value is NOT numeric
+                //dangerous but effective,still acceptable
+                if (IsDigit(row[0].StringValue))
                 {
                     entityList.Add(ToEntity(row, type));
                 }
@@ -51,13 +67,12 @@ namespace Minerva.Report
 
         private T ToEntity(Row row, Type type)
         {
-            //PropertyInfo[] properties = type.GetProperties();
             object entity = Activator.CreateInstance(type);
             Dictionary<int, string> classMap = ClassMapper.Instance.ToClassMap(type);
             foreach (KeyValuePair<int, string> pair in classMap)
             {
                 object value = row[pair.Key].Value;
-                if(null == value)
+                if (null == value)
                 {
                     value = "";
                 }
@@ -89,16 +104,6 @@ namespace Minerva.Report
                 else
                     propertyInfo.SetValue(entity, 0, null);
             }
-
-            if (IsType(propertyInfo.PropertyType, "Minerva.Report.Division") ||
-                IsType(propertyInfo.PropertyType, "Minerva.Report.TaskType"))
-            {
-                if (fieldValue != "")
-                    propertyInfo.SetValue(entity, Enum.Parse(propertyInfo.PropertyType, fieldValue), null);
-                else
-                    propertyInfo.SetValue(entity, 0, null);
-            }
-
         }
 
         private bool IsType(Type type, string typeName)
@@ -115,6 +120,12 @@ namespace Minerva.Report
             workbook.Worksheets[sheetIndex].Cells[rowIndex, columnIndex].PutValue(value);
         }
 
+        public void SetCellValues(List<T> entityList)
+        {
+            int index = workbook.Worksheets.Add(SheetType.Worksheet);
+            SetCellValues(index, entityList);
+        }
+
         public void SetCellValues(int index, List<T> entityList)
         {
             Worksheet sheet = workbook.Worksheets[index];
@@ -125,38 +136,30 @@ namespace Minerva.Report
 
         public void SetCellValues(int sheetIndex, int rowIndex, int columnIndex, List<T> entityList)
         {
-            object o, value;
+            object entity, value;
             PropertyInfo[] properties;
             for (int i = 0; i < entityList.Count; i++)
             {
-                o = entityList[i];
-                properties = o.GetType().GetProperties();
+                entity = entityList[i];
+                properties = entity.GetType().GetProperties();
                 for (int j = 0; j < properties.Length; j++)
                 {
-                    value = ToObjectValue(properties[j].Name, o);
+                    value = ToObjectValue(properties[j].Name, entity);
                     SetCellValue(sheetIndex, rowIndex + i, columnIndex + j, value);
                 }
             }
-
-            workbook.Save(reportPath);
-
         }
 
-        private object ToObjectValue(string name, object obj)
+        private object ToObjectValue(string name, object entity)
         {
-            object value = obj.GetType().GetRuntimeProperties()
+            object value = entity.GetType().GetRuntimeProperties()
                 .Where(p => p.Name == name)
                 .First()
-                .GetValue(obj, null);
+                .GetValue(entity, null);
 
             if (null == value)
             {
                 return "";
-            }
-
-            if (value.GetType().GetTypeInfo().BaseType == typeof(Enum))
-            {
-                return Translator.Instance.ToValueForHuman(value);
             }
 
             if (value.GetType() == typeof(DateTime))
@@ -165,6 +168,18 @@ namespace Minerva.Report
             }
             return value;
 
+        }
+
+        public ExcelDesolator<T> Save()
+        {
+            workbook.Save(excelPath);
+            return this;
+        }
+
+        public ExcelDesolator<T> SaveAs(string newFilePath)
+        {
+            workbook.Save(newFilePath);
+            return this;
         }
     }
 }

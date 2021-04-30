@@ -10,9 +10,7 @@ namespace Minerva.Report
 {
     class ClassMapper
     {
-
-        private static readonly ClassMapper instance = new ClassMapper();
-        public static Dictionary<Type, Dictionary<int,string>> classMap = new Dictionary<Type, Dictionary<int, string>>();
+        public static readonly Dictionary<Type, Dictionary<int,string>> classMap = new Dictionary<Type, Dictionary<int, string>>();
 
 
         static ClassMapper()
@@ -59,13 +57,7 @@ namespace Minerva.Report
         {
         }
 
-        public static ClassMapper Instance
-        {
-            get
-            {
-                return instance;
-            }
-        }
+        public static ClassMapper Instance { get; } = new ClassMapper();
 
         public Dictionary<int, string> ToClassMap(Type type)
         {

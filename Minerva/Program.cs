@@ -14,8 +14,6 @@ namespace Minerva
     class Program
     {
 
-        
-
         static void Main(string[] args)
         {
             ModifyInMemory.ActivateMemoryPatching();
@@ -28,12 +26,12 @@ namespace Minerva
                    });
 
 
-            WorkReport report = new WorkReport().Initalize();
+            WorkReport report = new WorkReport();
             ProjectPlan plan = new ProjectPlan();
-            plan.CompareWithWorkReport(report.WorkReportList).AppendToProjectPlan();
+            plan.CompareWithWorkReport(report).ReNewProjectPlan();
         }
 
 
-        
+
     }
 }

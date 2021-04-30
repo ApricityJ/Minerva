@@ -9,20 +9,11 @@ namespace Minerva
 {
     class Env
     {
-        private static readonly Env instance = new Env();
-
-
         private Env()
         {
         }
 
-        public static Env Instance
-        {
-            get
-            {
-                return instance;
-            }
-        }
+        public static Env Instance { get; } = new Env();
 
         private string FindFileByName(string keyWord)
         {
@@ -51,6 +42,8 @@ namespace Minerva
         public string ReportDivsion2nd { get; set; }
         public string ReportDivsion3rd { get; set; }
         public string ReportDivsionData { get; set; }
+
+        public int SummarySequence { get; set; }
 
 
 

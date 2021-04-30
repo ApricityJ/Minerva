@@ -60,20 +60,19 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
-    <Compile Include="Report\ProjectType.cs" />
     <Compile Include="Report\ClassMapper.cs" />
+    <Compile Include="Report\Department.cs" />
+    <Compile Include="Report\DepartmentType.cs" />
     <Compile Include="Report\ExcelDesolator.cs" />
-    <Compile Include="Report\InnovationType.cs" />
     <Compile Include="Report\ProjectPlan.cs" />
     <Compile Include="Report\ProjectPlanItem.cs" />
     <Compile Include="ModifyInMemory.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Report\Division.cs" />
-    <Compile Include="Report\TaskType.cs" />
+    <Compile Include="Report\Summary.cs" />
+    <Compile Include="Report\SummaryItem.cs" />
     <Compile Include="Report\WorkReport.cs" />
     <Compile Include="Report\WorkReportItem.cs" />
-    <Compile Include="Translator.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

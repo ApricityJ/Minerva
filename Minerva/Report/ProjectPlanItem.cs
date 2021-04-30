@@ -8,7 +8,7 @@ namespace Minerva.Report
 {
 
     //序号	项目名称	所属部门	创新类别	项目简介	立项年度	投产日期	项目类型	费用预算	数字化转型	状态	部门	负责人	激励建议
-    class ProjectPlanItem
+    internal class ProjectPlanItem
     {
         public int Sequence { get; set; }
         public string ProjectName { get; set; }

@@ -6,18 +6,20 @@ using System.Threading.Tasks;
 
 namespace Minerva.Report
 {
-    
+
 
     class ProjectPlan
     {
-        private ExcelDesolator<ProjectPlanItem> desolator;
-        private List<ProjectPlanItem> projectPlanList;
+        private readonly ExcelDesolator<ProjectPlanItem> desolator;
+        private readonly List<ProjectPlanItem> projectPlanList;
         private List<ProjectPlanItem> ignoredProjectList;
 
         public ProjectPlan()
         {
             desolator = new ExcelDesolator<ProjectPlanItem>(Env.Instance.ProjectPlanPath);
-            projectPlanList = desolator.ToEntityList(0, 2, typeof(ProjectPlanItem));
+            projectPlanList = desolator.SelectSheetAt(0)
+                .Skip(2)
+                .ToEntityList(typeof(ProjectPlanItem));
         }
 
         public List<ProjectPlanItem> ToProjectPlanList()
@@ -25,11 +27,10 @@ namespace Minerva.Report
             return projectPlanList;
         }
 
-        public ProjectPlan CompareWithWorkReport(List<WorkReportItem> workReport)
+        public ProjectPlan CompareWithWorkReport(WorkReport report)
         {
-            ignoredProjectList = workReport
+            ignoredProjectList = report.WorkReportList
                 .Where(workReportItem => IsNotExistInProjectPlanList(workReportItem.Name))
-                .ToList()
                 .Select(workReportItem => ToProjectPlanItem(workReportItem))
                 .ToList();
             return this;
@@ -37,11 +38,13 @@ namespace Minerva.Report
 
         private ProjectPlanItem ToProjectPlanItem(WorkReportItem workReportItem)
         {
-            ProjectPlanItem projectPlanItem = new ProjectPlanItem();
-            projectPlanItem.ProjectName = workReportItem.Name;
-            projectPlanItem.ResponsiblePersonnel = workReportItem.ResponsiblePersonnel;
-            projectPlanItem.HostDivision = workReportItem.HostDivision;
-            projectPlanItem.RequirementDepartment = workReportItem.BizDepartment;
+            ProjectPlanItem projectPlanItem = new ProjectPlanItem
+            {
+                ProjectName = workReportItem.Name,
+                ResponsiblePersonnel = workReportItem.ResponsiblePersonnel,
+                HostDivision = workReportItem.HostDivision,
+                RequirementDepartment = workReportItem.BizDepartment
+            };
             return projectPlanItem;
         }
 
@@ -50,9 +53,9 @@ namespace Minerva.Report
             return !projectPlanList.Any(projectPlanItem => projectPlanItem.ProjectName.Trim().Equals(projectName));
         }
 
-        public ProjectPlan AppendToProjectPlan()
+        public ProjectPlan ReNewProjectPlan()
         {
-            desolator.SetCellValues(0, ignoredProjectList);
+            desolator.SetCellValues(ignoredProjectList);
             return this;
         }
     }

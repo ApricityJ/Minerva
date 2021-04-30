@@ -4,10 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Minerva
+namespace Minerva.Report
 {
-    enum ProjectType
+    enum DepartmentType
     {
-
+        FRONT,
+        BACK
     }
 }
