@@ -9,6 +9,7 @@ namespace Minerva.Report
     enum DepartmentType
     {
         FRONT,
-        BACK
+        BACK,
+        UNKNOWN
     }
 }

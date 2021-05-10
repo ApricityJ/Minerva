@@ -61,6 +61,7 @@
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
     <Compile Include="Report\ClassMapper.cs" />
+    <Compile Include="Report\DataTableUtil.cs" />
     <Compile Include="Report\Department.cs" />
     <Compile Include="Report\DepartmentType.cs" />
     <Compile Include="Report\ExcelDesolator.cs" />
@@ -70,6 +71,7 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Report\Summary.cs" />
+    <Compile Include="Report\SummaryDocument.cs" />
     <Compile Include="Report\SummaryItem.cs" />
     <Compile Include="Report\WorkReport.cs" />
     <Compile Include="Report\WorkReportItem.cs" />

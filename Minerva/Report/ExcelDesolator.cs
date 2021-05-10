@@ -123,12 +123,14 @@ namespace Minerva.Report
         public void SetCellValues(List<T> entityList)
         {
             int index = workbook.Worksheets.Add(SheetType.Worksheet);
+            this.sheetIndex = index;
             SetCellValues(index, entityList);
         }
 
         public void SetCellValues(int index, List<T> entityList)
         {
             Worksheet sheet = workbook.Worksheets[index];
+            this.sheetIndex = index;
             int rowIndex = sheet.Cells.MaxRow + 1;
             int columnIndex = 0;
             SetCellValues(index, rowIndex, columnIndex, entityList);
@@ -136,6 +138,7 @@ namespace Minerva.Report
 
         public void SetCellValues(int sheetIndex, int rowIndex, int columnIndex, List<T> entityList)
         {
+            this.sheetIndex = sheetIndex;
             object entity, value;
             PropertyInfo[] properties;
             for (int i = 0; i < entityList.Count; i++)
@@ -168,6 +171,12 @@ namespace Minerva.Report
             }
             return value;
 
+        }
+
+        public ExcelDesolator<T> Fit()
+        {
+            workbook.Worksheets[this.sheetIndex].AutoFitColumns();
+            return this;
         }
 
         public ExcelDesolator<T> Save()

@@ -11,8 +11,10 @@ namespace Minerva.Report
     class ProjectPlan
     {
         private readonly ExcelDesolator<ProjectPlanItem> desolator;
-        private readonly List<ProjectPlanItem> projectPlanList;
+        private List<ProjectPlanItem> projectPlanList;
         private List<ProjectPlanItem> ignoredProjectList;
+        private List<ProjectPlanItem> existProjectList;
+        private Summary summary = new Summary();
 
         public ProjectPlan()
         {
@@ -33,6 +35,12 @@ namespace Minerva.Report
                 .Where(workReportItem => IsNotExistInProjectPlanList(workReportItem.Name))
                 .Select(workReportItem => ToProjectPlanItem(workReportItem))
                 .ToList();
+
+            existProjectList = report.WorkReportList
+                .Where(workReportItem => !IsNotExistInProjectPlanList(workReportItem.Name))
+                .Select(workReportItem => ToProjectPlanItem(workReportItem))
+                .ToList();
+
             return this;
         }
 
@@ -43,10 +51,13 @@ namespace Minerva.Report
                 ProjectName = workReportItem.Name,
                 ResponsiblePersonnel = workReportItem.ResponsiblePersonnel,
                 HostDivision = workReportItem.HostDivision,
-                RequirementDepartment = workReportItem.BizDepartment
+                RequirementDepartment = workReportItem.BizDepartment,
+                RemainHumanMonth = summary.ToRemainHumanMonth(workReportItem.Schedule),
+                EstimatedTimeRemaining = summary.ToEstimatedTimeRemaining(workReportItem.Schedule)
             };
             return projectPlanItem;
         }
+
 
         private bool IsNotExistInProjectPlanList(string projectName)
         {
@@ -56,6 +67,10 @@ namespace Minerva.Report
         public ProjectPlan ReNewProjectPlan()
         {
             desolator.SetCellValues(ignoredProjectList);
+            desolator.Fit();
+            desolator.SetCellValues(existProjectList);
+            desolator.Fit();
+            desolator.Save();
             return this;
         }
     }

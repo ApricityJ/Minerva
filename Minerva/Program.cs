@@ -27,8 +27,18 @@ namespace Minerva
 
 
             WorkReport report = new WorkReport();
+
+
             ProjectPlan plan = new ProjectPlan();
             plan.CompareWithWorkReport(report).ReNewProjectPlan();
+
+            Summary summary = new Summary(report);
+            SummaryDocument document = new SummaryDocument(summary);
+            document.Perform();
+
+
+
+
         }
 
 

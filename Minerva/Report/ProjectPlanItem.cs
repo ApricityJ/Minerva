@@ -24,6 +24,8 @@ namespace Minerva.Report
         public string HostDivision { get; set; }
         public string ResponsiblePersonnel { get; set; }
         public string MotivationalSuggestion { get; set; }
+        public string RemainHumanMonth { get; set; }
+        public string EstimatedTimeRemaining { get; set; }
 
     }
 }

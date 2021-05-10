@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Minerva.Report
 {
@@ -49,9 +46,23 @@ namespace Minerva.Report
                 .ToList();
         }
 
+        private bool isCompletelyMatch(string department,string nameToMatch)
+        {
+            return nameToMatch.All(c => department.Contains(c));
+        }
+
         public DepartmentType ToDepartmentType(string department)
         {
-            return departmentMap[department];
+            List<string> list  = departmentMap.Where(pair => isCompletelyMatch(pair.Key, department))
+                .Select(pair => pair.Key)
+                .ToList();
+
+            if (list.Count > 0)
+            {
+                return departmentMap[list[0]];
+            }
+
+            return DepartmentType.UNKNOWN;
         }
 
 

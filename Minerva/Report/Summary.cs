@@ -10,25 +10,29 @@ namespace Minerva.Report
     class Summary
     {
 
-        private List<SummaryItem> frontDevSummaryList;
-        private List<SummaryItem> frontDataSummaryList;
-        private List<SummaryItem> backDevSummaryList;
-        private List<SummaryItem> backDataSummaryList;
+        public List<SummaryItem> FrontDevSummaryList { get; set; }
+        public List<SummaryItem> FrontDataSummaryList { get; set; }
+        public List<SummaryItem> BackDevSummaryList { get; set; }
+        public List<SummaryItem> BackDataSummaryList { get; set; }
 
+        public Summary()
+        {
+
+        }
 
         public Summary(WorkReport report)
         {
-            frontDevSummaryList = ToSummaryList(DepartmentType.FRONT, report.WorkReportDev);
-            frontDataSummaryList = ToSummaryList(DepartmentType.FRONT, report.WorkReportData);
-            backDevSummaryList = ToSummaryList(DepartmentType.BACK, report.WorkReportDev);
-            backDataSummaryList = ToSummaryList(DepartmentType.BACK, report.WorkReportData);
+            FrontDevSummaryList = ToSummaryList(DepartmentType.FRONT, report.WorkReportDev);
+            FrontDataSummaryList = ToSummaryList(DepartmentType.FRONT, report.WorkReportData);
+            BackDevSummaryList = ToSummaryList(DepartmentType.BACK, report.WorkReportDev);
+            BackDataSummaryList = ToSummaryList(DepartmentType.BACK, report.WorkReportData);
         }
 
-        private string ToRemainHumanMonth(string schedule)
+        public string ToRemainHumanMonth(string schedule)
         {
             return Regex.Match(schedule, @"(?<=剩余工作量：)\S+").Value;
         }
-        private string ToEstimatedTimeRemaining(string schedule)
+        public string ToEstimatedTimeRemaining(string schedule)
         {
             return Regex.Match(schedule, @"(?<=计划投产时间：)\S+").Value;
         }
