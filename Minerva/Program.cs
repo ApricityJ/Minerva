@@ -30,7 +30,7 @@ namespace Minerva
 
 
             ProjectPlan plan = new ProjectPlan();
-            plan.CompareWithWorkReport(report).ReNewProjectPlan();
+            plan.CompareWith(report).ReNewProjectPlan();
 
             Summary summary = new Summary(report);
             SummaryDocument document = new SummaryDocument(summary);

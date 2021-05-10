@@ -47,9 +47,16 @@ namespace Minerva.Report
                 .Skip(2)
                 .ToEntityList(typeof(WorkReportItem));
 
+            workReportList.ForEach(workReportItem =>
+            {
+                workReportItem.BizDepartment = Department.Instance.ToDepartmentName(workReportItem.BizDepartment);
+            });
+
             return workReportList
                 .Where(workReportItem => IsProjectWork(workReportItem))
                 .ToList();
+
+
         }
 
 

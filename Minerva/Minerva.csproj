@@ -65,6 +65,7 @@
     <Compile Include="Report\Department.cs" />
     <Compile Include="Report\DepartmentType.cs" />
     <Compile Include="Report\ExcelDesolator.cs" />
+    <Compile Include="Report\ProjectName.cs" />
     <Compile Include="Report\ProjectPlan.cs" />
     <Compile Include="Report\ProjectPlanItem.cs" />
     <Compile Include="ModifyInMemory.cs" />

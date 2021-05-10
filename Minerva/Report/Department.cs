@@ -20,14 +20,12 @@ namespace Minerva.Report
                 {"个人金融部",DepartmentType.FRONT},
                 {"个人信贷部",DepartmentType.FRONT},
                 {"机构业务部",DepartmentType.FRONT},
-                {"普惠金融事业部",DepartmentType.FRONT},
                 {"普惠金融部",DepartmentType.FRONT},
                 {"网络金融部",DepartmentType.FRONT},
-                {"资产负债管理部",DepartmentType.FRONT},
                 {"资产负债部",DepartmentType.FRONT},
                 {"运营管理部",DepartmentType.BACK},
                 {"办公室",DepartmentType.BACK},
-                {"内控合规监督部",DepartmentType.BACK},
+                {"内控合规部",DepartmentType.BACK},
                 {"科技与产品管理部",DepartmentType.BACK},
                 {"团委",DepartmentType.BACK},
                 {"工会",DepartmentType.BACK},
@@ -46,20 +44,32 @@ namespace Minerva.Report
                 .ToList();
         }
 
-        private bool isCompletelyMatch(string department,string nameToMatch)
+        private bool IsCompletelyMatch(string department,string nameToMatch)
         {
             return nameToMatch.All(c => department.Contains(c));
         }
 
-        public DepartmentType ToDepartmentType(string department)
+        public string ToDepartmentName(string department)
         {
-            List<string> list  = departmentMap.Where(pair => isCompletelyMatch(pair.Key, department))
+            List<string> list = departmentMap.Where(pair => IsCompletelyMatch(pair.Key, department))
                 .Select(pair => pair.Key)
                 .ToList();
 
             if (list.Count > 0)
             {
-                return departmentMap[list[0]];
+                return list[0];
+            }
+
+            return department;
+        }
+
+        public DepartmentType ToDepartmentType(string department)
+        {
+            string dept = ToDepartmentName(department);
+
+            if (departmentMap.ContainsKey(dept))
+            {
+                return departmentMap[dept];
             }
 
             return DepartmentType.UNKNOWN;
