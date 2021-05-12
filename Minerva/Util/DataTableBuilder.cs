@@ -3,13 +3,16 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace Minerva.Report
+
+namespace Minerva.Util
 {
-    class DataTableUtil
+    /// <summary>
+    /// DataTable的操作类
+    /// </summary>
+    class DataTableBuilder
     {
+        //将一个List转为一个DataTable，为Word的merge提供数据源(Aspose不支持List<T>，仅支持DataTable等)
         public static DataTable ToDataTableOfList<T>(List<T> entities,string name)
         {
             Type type = entities[0].GetType();

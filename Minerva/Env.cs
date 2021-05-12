@@ -1,12 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.IO;
+
 
 namespace Minerva
 {
+    /// <summary>
+    /// 运行环境类，用于存储运行中所需要的常量，全局唯一
+    /// </summary>
     class Env
     {
         private Env()
@@ -15,11 +14,12 @@ namespace Minerva
 
         public static Env Instance { get; } = new Env();
 
+        //根据关键词搜索文件
         private string FindFileByName(string keyWord)
         {
             DirectoryInfo directory = new DirectoryInfo(WeeklyReportsDir);
             FileInfo[] files = directory.GetFiles(keyWord, SearchOption.AllDirectories);
-            if(files.Length > 0)
+            if (files.Length > 0)
             {
                 return files[0].FullName;
             }

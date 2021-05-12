@@ -9,6 +9,10 @@ using System.Xml;
 
 namespace Minerva
 {
+    /// <summary>
+    /// Aspose的内存补丁
+    /// 使用破解版本的代价，愿Aspose能原谅我的任性(不原谅也没关系)
+    /// </summary>
 
     public static class ModifyInMemory
     {

@@ -4,12 +4,16 @@ using System.Data;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Aspose.Words;
 
-namespace Minerva.Report
+namespace Minerva.Summary
 {
+
+    using Minerva.Util;
+    /// <summary>
+    /// 汇总 -- 科技与产品管理部周报(#Year#)年第(#Week#)期
+    /// 用于生成上述文档，请注意参考模板
+    /// </summary>
     class SummaryDocument
     {
         private string TemplatePath { get; set; }
@@ -28,10 +32,10 @@ namespace Minerva.Report
             this.summary = summary;
 
             DataTableList = new List<DataTable>();
-            DataTableList.Add(DataTableUtil.ToDataTableOfList(summary.FrontDevSummaryList, "FrontDevSummaryList"));
-            DataTableList.Add(DataTableUtil.ToDataTableOfList(summary.FrontDataSummaryList, "FrontDataSummaryList"));
-            DataTableList.Add(DataTableUtil.ToDataTableOfList(summary.BackDevSummaryList, "BackDevSummaryList"));
-            DataTableList.Add(DataTableUtil.ToDataTableOfList(summary.BackDataSummaryList, "BackDataSummaryList"));
+            DataTableList.Add(DataTableBuilder.ToDataTableOfList(summary.FrontDevSummaryList, "FrontDevSummaryList"));
+            DataTableList.Add(DataTableBuilder.ToDataTableOfList(summary.FrontDataSummaryList, "FrontDataSummaryList"));
+            DataTableList.Add(DataTableBuilder.ToDataTableOfList(summary.BackDevSummaryList, "BackDevSummaryList"));
+            DataTableList.Add(DataTableBuilder.ToDataTableOfList(summary.BackDataSummaryList, "BackDataSummaryList"));
 
             ToTemplatePath();
             ToTargetPath();
@@ -42,6 +46,7 @@ namespace Minerva.Report
             TemplatePath = Path.Combine(TemplateBaseDir, Template);
         }
 
+        //计算当前为一年的第n周
         private int ToWeekOfYear()
         {
             CultureInfo ci = new CultureInfo("zh-CN");
@@ -62,11 +67,16 @@ namespace Minerva.Report
         {
             Document doc = new Document(TemplatePath);
 
-            List<string> names = new List<string>();
-            List<object> values = new List<object>();
 
+
+
+            //如果需要替换单个变量，请参考如下代码：
+
+            //List<string> names = new List<string>();
+            //List<object> values = new List<object>();
 
             //FieldDataSet = new Dictionary<string, object>();
+            //FieldDataSet.Add("key","value");
             //FieldDataSet.ToList().ForEach(pair =>
             //{
             //    names.Add(pair.Key);

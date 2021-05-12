@@ -1,9 +1,13 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
-namespace Minerva.Report
+namespace Minerva.Department
 {
-    internal class Department
+    /// <summary>
+    /// 部门类，用于管理用到的部门及模糊处理周报中的部门名称
+    /// 全局仅需要一个，使用单例
+    /// </summary>
+    public class Department
     {
         private readonly Dictionary<string, DepartmentType> departmentMap;
 
@@ -36,6 +40,7 @@ namespace Minerva.Report
 
         public static Department Instance { get; } = new Department();
 
+        //根据部门类型获取对应的部门名称List
         public List<string> ToDepartmentList(DepartmentType type)
         {
             return departmentMap
@@ -44,11 +49,21 @@ namespace Minerva.Report
                 .ToList();
         }
 
+        //判断周报中的所填写的部门名称是不是能否与正式部门名称完整匹配
+        //e.g.
+        //IsCompletelyMatch("个人金融部","个人金融部") -> true
+        //IsCompletelyMatch("个人金融部","个金") -> true
+        //IsCompletelyMatch("个人金融部","个人业务部") -> false
         private bool IsCompletelyMatch(string department,string nameToMatch)
         {
             return nameToMatch.All(c => department.Contains(c));
         }
 
+        //将周报中的部门名称转为正式部门名称，如果找不到则使用周报中的部门名称
+        //e.g.
+        //ToDepartmentName("个金") -> 个人金融部
+        //ToDepartmentName("个人金融部") -> 个人金融部
+        //ToDepartmentName("个人业务部") -> 个人业务部
         public string ToDepartmentName(string department)
         {
             List<string> list = departmentMap.Where(pair => IsCompletelyMatch(pair.Key, department))
@@ -63,6 +78,11 @@ namespace Minerva.Report
             return department;
         }
 
+        //根据部门名称返回部门类型
+        //e.g. 
+        //ToDepartmentType("个人金融部") -> FRONT
+        //ToDepartmentType("工会") -> BACK
+        //ToDepartmentType("个人业务部") -> UNKNOWN
         public DepartmentType ToDepartmentType(string department)
         {
             string dept = ToDepartmentName(department);

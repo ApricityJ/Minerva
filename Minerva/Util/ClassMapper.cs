@@ -1,21 +1,24 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 
 
-namespace Minerva.Report
+namespace Minerva.Util
 {
+    using Minerva.Weekly;
+    using Minerva.Project;
+
+    /// <summary>
+    /// 
+    /// </summary>
     class ClassMapper
     {
-        public static readonly Dictionary<Type, Dictionary<int,string>> classMap = new Dictionary<Type, Dictionary<int, string>>();
+        public static readonly Dictionary<Type, Dictionary<int,string>> ClassMap = new Dictionary<Type, Dictionary<int, string>>();
 
 
         static ClassMapper()
         {
-            Dictionary<int, string> WorkReportItemMap = new Dictionary<int, string>
+            Dictionary<int, string> WeeklyItemMap = new Dictionary<int, string>
             {
                 { 0, "Sequence" },
                 { 1, "Name" },
@@ -29,7 +32,7 @@ namespace Minerva.Report
                 { 9, "Schedule" }
             };
 
-            classMap.Add(typeof(Report.WorkReportItem), WorkReportItemMap);
+            ClassMap.Add(typeof(WeeklyItem), WeeklyItemMap);
 
             Dictionary<int, string> ProjectPlanItemMap = new Dictionary<int, string>
             {
@@ -49,7 +52,7 @@ namespace Minerva.Report
                 { 13, "MotivationalSuggestion" }
             };
 
-            classMap.Add(typeof(Report.ProjectPlanItem), ProjectPlanItemMap);
+            ClassMap.Add(typeof(ProjectPlanItem), ProjectPlanItemMap);
 
         }
 
@@ -61,7 +64,7 @@ namespace Minerva.Report
 
         public Dictionary<int, string> ToClassMap(Type type)
         {
-            return classMap[type];
+            return ClassMap[type];
         }
 
 

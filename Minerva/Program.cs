@@ -5,11 +5,13 @@ using System.Text;
 using System.Threading.Tasks;
 using CommandLine;
 
-namespace Minerva
+
+namespace Minerva.Main
 {
 
-    using Report;
-
+    using Minerva.Weekly;
+    using Minerva.Project;
+    using Minerva.Summary;
 
     class Program
     {
@@ -25,14 +27,17 @@ namespace Minerva
                        Env.Instance.Initialize(o.ReportDir);
                    });
 
+            //读取周报(们)
+            Weekly weekly = new Weekly();
 
-            WorkReport report = new WorkReport();
-
-
+            //读取项目计划
             ProjectPlan plan = new ProjectPlan();
-            plan.CompareWith(report).ReNewProjectPlan();
 
-            Summary summary = new Summary(report);
+            //比较并更新项目计划
+            plan.CompareWith(weekly).ReNewProjectPlan();
+
+            //生成汇总报告
+            Summary summary = new Summary(weekly);
             SummaryDocument document = new SummaryDocument(summary);
             document.Perform();
 
