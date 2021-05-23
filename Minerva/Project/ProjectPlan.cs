@@ -5,6 +5,7 @@ using System.Text.RegularExpressions;
 
 namespace Minerva.Project
 {
+
     using Minerva.Weekly;
     /// <summary>
     /// 项目计划类，处理项目计划相关的操作
@@ -21,7 +22,7 @@ namespace Minerva.Project
         public ProjectPlan()
         {
             dao = new ExcelDAO<ProjectPlanItem>(Env.Instance.ProjectPlanPath);
-  
+
             projectPlanList = dao.SelectSheetAt(0)
                 .Skip(2)
                 .ToEntityList(typeof(ProjectPlanItem));
@@ -104,6 +105,14 @@ namespace Minerva.Project
             return projectPlanList.Any(projectPlanItem => projectPlanItem.ProjectName.Trim().Equals(projectName));
         }
 
+        private void RenewProjectPlanItem(ProjectPlanItem projectPlanItem)
+        {
+            int rowIndex = dao.SelectSheetAt(0).FindRowIndex(1, projectPlanItem.ProjectName);
+            int columnIndex = typeof(ProjectPlanItem).GetProperties().Length;
+            dao.SetCellValue(rowIndex, columnIndex - 1, projectPlanItem.RemainHumanMonth);
+            dao.SetCellValue(rowIndex, columnIndex, projectPlanItem.EstimatedTimeRemaining);
+        }
+
         //更新项目计划文件，将结果追加于两个新的sheet中并保存文件
         public ProjectPlan ReNewProjectPlan()
         {
@@ -111,6 +120,7 @@ namespace Minerva.Project
             dao.Fit();
             dao.SetCellValues(existProjectList);
             dao.Fit();
+            existProjectList.ForEach(item => RenewProjectPlanItem(item));
             dao.Save();
             return this;
         }

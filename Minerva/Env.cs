@@ -26,9 +26,10 @@ namespace Minerva
             return "";
         }
 
-        public void Initialize(string dir)
+        public void Initialize(string dir,int phase)
         {
             WeeklyReportsDir = dir;
+            Phase = phase;
             ProjectPlanPath = FindFileByName("*项目*");
             ReportDivsion1st = FindFileByName("*开发一部*");
             ReportDivsion2nd = FindFileByName("*开发二部*");
@@ -44,6 +45,8 @@ namespace Minerva
         public string ReportDivsionData { get; set; }
 
         public int SummarySequence { get; set; }
+
+        public int Phase { get; set; }
 
 
 

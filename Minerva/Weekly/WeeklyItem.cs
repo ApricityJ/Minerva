@@ -1,7 +1,27 @@
-﻿namespace Minerva.Weekly
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+
+namespace Minerva.Weekly
 {
-    internal class WeeklyItem
+    internal class WeeklyItem : IComparer<WeeklyItem>, IComparable<WeeklyItem>
     {
+        static Dictionary<string, int> DivisionWeightMap = new Dictionary<string, int>()
+        {
+            { "一部", 1 },
+            { "二部", 2 },
+            { "三部", 3 },
+            { "数据", 4 }
+        };
+
+        static Dictionary<string, int> ProjectTypeWeightMap = new Dictionary<string, int>()
+        {
+
+            { "一般", 1 },
+            { "快捷", 2 },
+            { "数据", 3 }
+        };
+
         //序号	项目/需求/管理名称	任务类型	当前进展	主办部门	协办部门	业务部门	负责人员	参与人员	进度计划
         public int Sequence { get; set; }
         public string Name { get; set; }
@@ -14,5 +34,40 @@
         public string Participants { get; set; }
         public string Schedule { get; set; }
 
+        public int ToDivisionWeight()
+        {
+            return DivisionWeightMap.FirstOrDefault(pair => HostDivision.Contains(pair.Key)).Value;
+        }
+
+        public int ToProjectTypeWeight()
+        {
+            return ProjectTypeWeightMap.FirstOrDefault(pair => Type.Contains(pair.Key)).Value;
+        }
+
+        public bool IsProjectWork()
+        {
+            return Type.Contains("项目");
+        }
+
+        public bool IsProjectApproved()
+        {
+            string status = CurrentProgress.Split('\n')[0];
+            return status.Contains("立项") || status.Contains("需求");
+        }
+
+        public int Compare(WeeklyItem x, WeeklyItem y)
+        {
+            int diff = x.ToProjectTypeWeight() - y.ToProjectTypeWeight();
+            if (diff == 0)
+            {
+                return x.ToDivisionWeight() - y.ToDivisionWeight();
+            }
+            return diff;
+        }
+
+        public int CompareTo(WeeklyItem other)
+        {
+            return Compare(this, other);
+        }
     }
 }

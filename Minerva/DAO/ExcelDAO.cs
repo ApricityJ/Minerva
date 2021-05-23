@@ -21,7 +21,7 @@ namespace Minerva.DAO
         private int skipRows = 0;
 
 
-        public ExcelDAO(string excelPath)
+        public ExcelDAO(string excelPath) 
         {
             this.excelPath = excelPath;
             workbook = new Workbook(this.excelPath);
@@ -60,7 +60,7 @@ namespace Minerva.DAO
             List<T> entityList = new List<T>();
 
             Worksheet sheet = workbook.Worksheets[index];
-            for (int i = skip; i <= sheet.Cells.MaxRow; i++)
+            for (int i = skip,length = sheet.Cells.MaxDataRow; i <= length ; i++)
             {
                 Row row = sheet.Cells.GetRow(i);
                 //exit when first cell value is NOT numeric
@@ -129,8 +129,13 @@ namespace Minerva.DAO
             return IsType(type.BaseType, typeName);
         }
 
+        public void SetCellValue(int rowIndex, int columnIndex, object value)
+        {
+            workbook.Worksheets[sheetIndex].Cells[rowIndex, columnIndex].PutValue(value);
+        }
+
         //设置一个单元格的值，位于指定sheet的指定坐标[行坐标，列坐标]
-        private void SetCellValue(int sheetIndex, int rowIndex, int columnIndex, object value)
+        public void SetCellValue(int sheetIndex, int rowIndex, int columnIndex, object value)
         {
             workbook.Worksheets[sheetIndex].Cells[rowIndex, columnIndex].PutValue(value);
         }
@@ -150,7 +155,7 @@ namespace Minerva.DAO
         {
             Worksheet sheet = workbook.Worksheets[index];
             this.sheetIndex = index;
-            int rowIndex = sheet.Cells.MaxRow + 1;
+            int rowIndex = sheet.Cells.MaxDataRow + 1;
             int columnIndex = 0;
             SetCellValues(index, rowIndex, columnIndex, entityList);
         }
@@ -174,7 +179,6 @@ namespace Minerva.DAO
         }
 
         //获取一个对象指定properties的值
-        //例如
         private object ToObjectValue(string name, object entity)
         {
             object value = entity.GetType().GetRuntimeProperties()
@@ -193,6 +197,38 @@ namespace Minerva.DAO
             }
             return value;
 
+        }
+
+        public int FindRowIndex(int columnIndex, string s)
+        {
+            Worksheet sheet = workbook.Worksheets[sheetIndex];
+            for (int i = 0; i <= sheet.Cells.MaxDataRow; i++)
+            {
+                Row row = sheet.Cells.GetRow(i);
+                if (row[columnIndex].GetStringValue(CellValueFormatStrategy.CellStyle).Equals(s))
+                {
+                    return i;
+                }
+            }
+
+            return -1;
+        }
+
+        public int[,] FindCoordinate(string s)
+        {
+            Worksheet sheet = workbook.Worksheets[sheetIndex];
+            for (int i = 0, rows = sheet.Cells.MaxDataRow; i <= rows; i++)
+            {
+                Row row = sheet.Cells.GetRow(i);
+                for (int j = 0, columns = sheet.Cells.MaxDataColumn; j < columns; j++)
+                {
+                    if (row[j].GetStringValue(CellValueFormatStrategy.CellStyle).Equals(s))
+                    {
+                        return new int[2, 1] { { i }, { j } };
+                    }
+                }
+            }
+            return new int[2, 1] { { -1 }, { -1 } };
         }
 
         //自适应Columns的宽度

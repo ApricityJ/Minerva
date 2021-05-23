@@ -47,28 +47,24 @@ namespace Minerva.Summary
         }
 
         //计算当前为一年的第n周
-        private int ToWeekOfYear()
-        {
-            CultureInfo ci = new CultureInfo("zh-CN");
-            System.Globalization.Calendar cal = ci.Calendar;
-            CalendarWeekRule cwr = ci.DateTimeFormat.CalendarWeekRule;
-            DayOfWeek dow = DayOfWeek.Monday;
-            return cal.GetWeekOfYear(DateTime.Now, cwr, dow);
-        }
+
 
         private void ToTargetPath()
         {
-            TargetPath = Template.Replace("#Year#", DateTime.Now.Year.ToString());
-            TargetPath = TargetPath.Replace("#Week#", ToWeekOfYear().ToString());
+            TargetPath = Template.Replace("#Year#", DateUtil.ToCurrentYear())
+                .Replace("#Week#", DateUtil.ToWeekOfYear().ToString());
+            TargetPath = Path.Combine(Env.Instance.WeeklyReportsDir, TargetPath);
+
+            if (File.Exists(TargetPath))
+            {
+                File.Delete(TargetPath);
+            }
         }
 
 
         public void Perform()
         {
             Document doc = new Document(TemplatePath);
-
-
-
 
             //如果需要替换单个变量，请参考如下代码：
 

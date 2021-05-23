@@ -16,6 +16,27 @@ namespace Minerva.Main
     class Program
     {
 
+        static void Phase1()
+        {
+            Weekly weekly = new Weekly();
+            ProjectPlan plan = new ProjectPlan();
+            plan.CompareWith(weekly).ReNewProjectPlan();
+        }
+
+        static void Phase2()
+        {
+            Weekly weekly = new Weekly();
+            weekly.ToSortedWeeklyList().Summarize();
+        }
+
+        static void Phase3()
+        {
+            Weekly weekly = new Weekly();
+            Summary summary = new Summary(weekly);
+            SummaryDocument document = new SummaryDocument(summary);
+            document.Perform();
+        }
+
         static void Main(string[] args)
         {
             ModifyInMemory.ActivateMemoryPatching();
@@ -24,22 +45,19 @@ namespace Minerva.Main
             Parser.Default.ParseArguments<Options>(args)
                    .WithParsed<Options>(o =>
                    {
-                       Env.Instance.Initialize(o.ReportDir);
+                       Env.Instance.Initialize(o.ReportDir, o.Phase);
                    });
 
-            //读取周报(们)
-            Weekly weekly = new Weekly();
+            switch (Env.Instance.Phase)
+            {
+                case 1: Phase1(); break;
+                case 2: Phase2(); break;
+                case 3: Phase3(); break;
+                default: Console.WriteLine("please enter 1,2 or 3..."); break;
 
-            //读取项目计划
-            ProjectPlan plan = new ProjectPlan();
+            }
 
-            //比较并更新项目计划
-            plan.CompareWith(weekly).ReNewProjectPlan();
 
-            //生成汇总报告
-            Summary summary = new Summary(weekly);
-            SummaryDocument document = new SummaryDocument(summary);
-            document.Perform();
 
 
 
