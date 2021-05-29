@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System;
+
 
 namespace Minerva.Project
 {
@@ -44,7 +46,7 @@ namespace Minerva.Project
                 }
             });
 
-            return containsCount / reportProjName.Length;
+            return containsCount * 1.0 / reportProjName.Length;
         }
 
         //将一个周报中的项目名称尝试转换为一个标准项目名称(以项目计划为准)

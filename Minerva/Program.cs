@@ -18,9 +18,11 @@ namespace Minerva.Main
 
         static void Phase1()
         {
-            Weekly weekly = new Weekly();
-            ProjectPlan plan = new ProjectPlan();
-            plan.CompareWith(weekly).ReNewProjectPlan();
+            //Weekly weekly = new Weekly();
+            //ProjectPlan plan = new ProjectPlan();
+            //plan.CompareWith(weekly).ReNewProjectPlan();
+            WeeklySummary summary = new WeeklySummary();
+            summary.Summarize();
         }
 
         static void Phase2()

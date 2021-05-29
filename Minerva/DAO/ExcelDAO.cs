@@ -8,6 +8,8 @@ using System.Text.RegularExpressions;
 namespace Minerva.DAO
 {
     using Minerva.Util;
+    using System.IO;
+
     /// <summary>
     /// Excel操作类，用于处理Excel的读写,是一个被封装的Excel处理对象
     /// 每一个类的实例对应一个具体的Excel文件
@@ -24,7 +26,16 @@ namespace Minerva.DAO
         public ExcelDAO(string excelPath) 
         {
             this.excelPath = excelPath;
-            workbook = new Workbook(this.excelPath);
+
+            if (File.Exists(excelPath))
+            {
+                workbook = new Workbook(this.excelPath);
+            }
+            else
+            {
+                workbook = new Workbook();
+            }
+                
         }
 
         //设置选中的sheet
@@ -33,6 +44,8 @@ namespace Minerva.DAO
             this.sheetIndex = sheetIndex;
             return this;
         }
+
+
 
         //设置需要跳过的行数
         public ExcelDAO<T> Skip(int skipRows)
@@ -140,28 +153,43 @@ namespace Minerva.DAO
             workbook.Worksheets[sheetIndex].Cells[rowIndex, columnIndex].PutValue(value);
         }
 
+        public ExcelDAO<T> Name(string name)
+        {
+            Worksheet sheet = workbook.Worksheets[this.sheetIndex];
+            sheet.Name = name;
+            return this;
+        }
+
+        public ExcelDAO<T> RemoveAt(string name)
+        {
+            workbook.Worksheets.RemoveAt(name);
+            return this;
+        }
+
         //将一个List写入一个新的sheet
         //是SetCellValues(int index, List<T> entityList)一个重载特例
-        public void SetCellValues(List<T> entityList)
+        public ExcelDAO<T> SetCellValues(List<T> entityList)
         {
             int index = workbook.Worksheets.Add(SheetType.Worksheet);
             this.sheetIndex = index;
             SetCellValues(index, entityList);
+            return this;
         }
 
         //将一个List写入一个新的sheet
         //是SetCellValues(int sheetIndex, int rowIndex, int columnIndex, List<T> entityList)一个重载特例
-        public void SetCellValues(int index, List<T> entityList)
+        public ExcelDAO<T> SetCellValues(int index, List<T> entityList)
         {
             Worksheet sheet = workbook.Worksheets[index];
             this.sheetIndex = index;
             int rowIndex = sheet.Cells.MaxDataRow + 1;
             int columnIndex = 0;
             SetCellValues(index, rowIndex, columnIndex, entityList);
+            return this;
         }
 
         //将一个List写入指定sheet的指定坐标[行坐标，列坐标]
-        public void SetCellValues(int sheetIndex, int rowIndex, int columnIndex, List<T> entityList)
+        public ExcelDAO<T> SetCellValues(int sheetIndex, int rowIndex, int columnIndex, List<T> entityList)
         {
             this.sheetIndex = sheetIndex;
             object entity, value;
@@ -176,6 +204,7 @@ namespace Minerva.DAO
                     SetCellValue(sheetIndex, rowIndex + i, columnIndex + j, value);
                 }
             }
+            return this;
         }
 
         //获取一个对象指定properties的值

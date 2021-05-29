@@ -15,17 +15,23 @@ namespace Minerva.Project
         private readonly ExcelDAO<ProjectPlanItem> dao;
         private List<ProjectPlanItem> projectPlanList;
         private List<ProjectPlanItem> ignoredProjectList;
-        private List<ProjectPlanItem> existProjectList;
+        private List<ProjectPlanItem> notExistProjectList;
+        private List<WeeklyItem> markableWeeklyList;
+
 
         private ProjectName projectName;
 
         public ProjectPlan()
         {
             dao = new ExcelDAO<ProjectPlanItem>(Env.Instance.ProjectPlanPath);
-
+            
+            //读取项目计划excel生成项目列表
             projectPlanList = dao.SelectSheetAt(0)
                 .Skip(2)
-                .ToEntityList(typeof(ProjectPlanItem));
+                .ToEntityList(typeof(ProjectPlanItem))
+                //已结项和已投产的项目无需考虑
+                .Where(item=>!item.IsReleased())
+                .ToList();
             projectName = ToProjectName();
         }
 
@@ -48,13 +54,16 @@ namespace Minerva.Project
             weekly.WeeklyList.ForEach(item => { item.Name = projectName.TryToProjectPlanName(item.Name); });
 
             ignoredProjectList = weekly.WeeklyList
-                .Where(item => !IsExistInProjectPlanList(item.Name))
+                .Where(item => !IsExistInProjectPlanList(item.Name)&&!item.IsProjectApproved())
                 .Select(item => ToNewProjectPlanItem(item))
                 .ToList();
 
-            existProjectList = weekly.WeeklyList
-                .Where(item => IsExistInProjectPlanList(item.Name))
-                .Select(item => ToProjectPlanItem(item))
+            notExistProjectList = projectPlanList
+                .Where(item => !weekly.IsExistInWeeklyList(item.ProjectName))
+                .ToList();
+
+            markableWeeklyList = weekly.WeeklyList
+                .Where(item => item.IsProjectApproved())
                 .ToList();
 
             return this;
@@ -105,6 +114,7 @@ namespace Minerva.Project
             return projectPlanList.Any(projectPlanItem => projectPlanItem.ProjectName.Trim().Equals(projectName));
         }
 
+
         private void RenewProjectPlanItem(ProjectPlanItem projectPlanItem)
         {
             int rowIndex = dao.SelectSheetAt(0).FindRowIndex(1, projectPlanItem.ProjectName);
@@ -116,12 +126,19 @@ namespace Minerva.Project
         //更新项目计划文件，将结果追加于两个新的sheet中并保存文件
         public ProjectPlan ReNewProjectPlan()
         {
-            dao.SetCellValues(ignoredProjectList);
-            dao.Fit();
-            dao.SetCellValues(existProjectList);
-            dao.Fit();
-            existProjectList.ForEach(item => RenewProjectPlanItem(item));
+            dao.RemoveAt("周报(存在)项目计划(不存在)");
+            dao.SetCellValues(ignoredProjectList).Name("周报(存在)项目计划(不存在)").Fit();
             dao.Save();
+
+            dao.RemoveAt("周报(不存在)项目计划(存在)");
+            dao.SetCellValues(notExistProjectList).Name("周报(不存在)项目计划(存在)").Fit();
+            dao.Save();
+
+            ExcelDAO<WeeklyItem> yet_another_dao = new ExcelDAO<WeeklyItem>(Env.Instance.ProjectPlanPath);
+            yet_another_dao.RemoveAt("需求与立项中清单");
+            yet_another_dao.SetCellValues(markableWeeklyList).Name("需求与立项中清单").Fit();
+            yet_another_dao.Save();
+
             return this;
         }
     }

@@ -23,5 +23,10 @@
         public string RemainHumanMonth { get; set; }
         public string EstimatedTimeRemaining { get; set; }
 
+        //此项目状态是否为投产或者结项
+        public bool IsReleased()
+        {
+            return Status.Contains("投产") || Status.Contains("结项");
+        }
     }
 }

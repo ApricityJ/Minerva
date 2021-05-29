@@ -49,6 +49,12 @@ namespace Minerva.Weekly
         //获取一个部门的项目周报(仅限开发和数据分析部)
         private List<WeeklyItem> ToWeekly(string path)
         {
+            
+            if (path.Equals(""))
+            {
+                return new List<WeeklyItem>();
+            }
+
             //读取excel文件
             List<WeeklyItem> weeklyItemList = new ExcelDAO<WeeklyItem>(path)
                 .SelectSheetAt(0)
@@ -64,7 +70,7 @@ namespace Minerva.Weekly
             //仅保留项目类工作，仅考虑已立项项目(不包含立项和需求中的项目)
             return weeklyItemList
                 .Where(item => item.IsProjectWork())
-                .Where(item => !item.IsProjectApproved())
+                //.Where(item => !item.IsProjectApproved())
                 .ToList();
 
         }
@@ -101,6 +107,12 @@ namespace Minerva.Weekly
             dao.Save();
 
             return this;
+        }
+
+        public bool IsExistInWeeklyList(string projectName)
+        {
+            return WeeklyList.Any(item => item.Name.Trim().Equals(projectName));
+
         }
 
 

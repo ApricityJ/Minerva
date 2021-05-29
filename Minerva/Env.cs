@@ -35,6 +35,10 @@ namespace Minerva
             ReportDivsion2nd = FindFileByName("*开发二部*");
             ReportDivsion3rd = FindFileByName("*开发三部*");
             ReportDivsionData = FindFileByName("*数据分析部*");
+            ReportTest = FindFileByName("*测试*");
+            ReportSystem = FindFileByName("*系统*");
+            ReportNet = FindFileByName("*网络*");
+            ReportProduct = FindFileByName("*产品部*");
         }
 
         public string WeeklyReportsDir { get; set; }
@@ -43,6 +47,10 @@ namespace Minerva
         public string ReportDivsion2nd { get; set; }
         public string ReportDivsion3rd { get; set; }
         public string ReportDivsionData { get; set; }
+        public string ReportTest { get; set; }
+        public string ReportSystem { get; set; }
+        public string ReportNet { get; set; }
+        public string ReportProduct { get; set; }
 
         public int SummarySequence { get; set; }
 

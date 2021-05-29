@@ -75,8 +75,10 @@
     <Compile Include="Summary\SummaryDocument.cs" />
     <Compile Include="Summary\SummaryItem.cs" />
     <Compile Include="Util\DateUtil.cs" />
+    <Compile Include="Weekly\AbstractWeekly.cs" />
     <Compile Include="Weekly\Weekly.cs" />
     <Compile Include="Weekly\WeeklyItem.cs" />
+    <Compile Include="Weekly\WeeklySummary.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

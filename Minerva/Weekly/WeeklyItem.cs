@@ -4,14 +4,18 @@ using System.Linq;
 
 namespace Minerva.Weekly
 {
-    internal class WeeklyItem : IComparer<WeeklyItem>, IComparable<WeeklyItem>
+    public class WeeklyItem : IComparer<WeeklyItem>, IComparable<WeeklyItem>
     {
         static Dictionary<string, int> DivisionWeightMap = new Dictionary<string, int>()
         {
             { "一部", 1 },
             { "二部", 2 },
             { "三部", 3 },
-            { "数据", 4 }
+            { "数据", 4 },
+            { "测试", 5 },
+            { "系统", 6 },
+            { "网络", 7 },
+            { "产品", 8 }
         };
 
         static Dictionary<string, int> ProjectTypeWeightMap = new Dictionary<string, int>()
@@ -19,8 +23,14 @@ namespace Minerva.Weekly
 
             { "一般", 1 },
             { "快捷", 2 },
-            { "数据", 3 }
+            { "数据", 3 },
+            {"重要需求",4 },
+            {"一般需求",5 },
+            {"其它",6 }
+
         };
+
+
 
         //序号	项目/需求/管理名称	任务类型	当前进展	主办部门	协办部门	业务部门	负责人员	参与人员	进度计划
         public int Sequence { get; set; }
@@ -47,6 +57,12 @@ namespace Minerva.Weekly
         public bool IsProjectWork()
         {
             return Type.Contains("项目");
+        }
+
+        public bool IsSuspended()
+        {
+            string status = CurrentProgress.Split('\n')[0];
+            return status.Contains("暂停");
         }
 
         public bool IsProjectApproved()
