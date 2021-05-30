@@ -90,7 +90,7 @@ namespace Minerva.Weekly
         {
             TargetPath = Template.Replace("#Year#", DateUtil.ToCurrentYear())
                 .Replace("#Week#", DateUtil.ToWeekOfYear().ToString());
-            TargetPath = Path.Combine(Env.Instance.WeeklyReportsDir, TargetPath);
+            TargetPath = Path.Combine(Env.Instance.RootDir, TargetPath);
 
             if (File.Exists(TargetPath))
             {

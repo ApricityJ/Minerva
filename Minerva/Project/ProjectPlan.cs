@@ -12,18 +12,19 @@ namespace Minerva.Project
     /// </summary>
     class ProjectPlan
     {
-        private readonly ExcelDAO<ProjectPlanItem> dao;
+        private ExcelDAO<ProjectPlanItem> dao;
         private List<ProjectPlanItem> projectPlanList;
-        private List<ProjectPlanItem> ignoredProjectList;
-        private List<ProjectPlanItem> notExistProjectList;
-        private List<WeeklyItem> markableWeeklyList;
+        private List<WeeklyItem> ignoredWeeklyItemList;
+        private List<ProjectPlanItem> ignoredProjectPlanList;
+        private List<ProjectPlanItem> existedProjectPlanList;
+        private List<WeeklyItem> markableWeeklyItemList;
 
 
         private ProjectName projectName;
 
         public ProjectPlan()
         {
-            dao = new ExcelDAO<ProjectPlanItem>(Env.Instance.ProjectPlanPath);
+            dao = new ExcelDAO<ProjectPlanItem>(Env.Instance.ProjectPlan);
             
             //读取项目计划excel生成项目列表
             projectPlanList = dao.SelectSheetAt(0)
@@ -41,28 +42,30 @@ namespace Minerva.Project
             return new ProjectName(nameList);
         }
 
-        public List<ProjectPlanItem> ToProjectPlanList()
+        //项目计划与工作周报交叉比对
+        //对于 [周报] 中存在，但[项目计划]中不存在的内容，存放 ignoredWeeklyItemList
+        //对于 [周报] 中不存在，但[项目计划]中存在的内容，存放 ignoredProjectPlanList
+        //对于 [周报] 中立项和需求中的项目，存放 markableWeeklyItemList，留待人工判断
+        public ProjectPlan CompareWith(DevWeeklies weeklies)
         {
-            return projectPlanList;
-        }
+            //尝试将周报中的项目名称模糊匹配为项目计划中的项目名称
+            weeklies.ProjectWorkList.ForEach(item => { item.Name = projectName.TryToProjectPlanName(item.Name); });
 
-        //项目计划与工作周报对比
-        //对于 周报中存在，但项目计划未能匹配的项目内容，存放ignoredProjectList
-        //对于 周报中存在，项目计划匹配成功的项目内容，更新其字段后，存放existProjectList
-        public ProjectPlan CompareWith(Weekly weekly)
-        {
-            weekly.WeeklyList.ForEach(item => { item.Name = projectName.TryToProjectPlanName(item.Name); });
-
-            ignoredProjectList = weekly.WeeklyList
-                .Where(item => !IsExistInProjectPlanList(item.Name)&&!item.IsProjectApproved())
-                .Select(item => ToNewProjectPlanItem(item))
+            existedProjectPlanList = weeklies.ProjectWorkList
+                .Where(item => IsExist(item.Name) && !item.IsProjectApproved())
+                .ToList()
+                .Select(item=> ToProjectPlanItem(item))
                 .ToList();
 
-            notExistProjectList = projectPlanList
-                .Where(item => !weekly.IsExistInWeeklyList(item.ProjectName))
+            ignoredWeeklyItemList = weeklies.ProjectWorkList
+                .Where(item => !IsExist(item.Name)&&!item.IsProjectApproved())
                 .ToList();
 
-            markableWeeklyList = weekly.WeeklyList
+            ignoredProjectPlanList = projectPlanList
+                .Where(item => !weeklies.IsExist(item.ProjectName))
+                .ToList();
+
+            markableWeeklyItemList = weeklies.ProjectWorkList
                 .Where(item => item.IsProjectApproved())
                 .ToList();
 
@@ -70,14 +73,12 @@ namespace Minerva.Project
         }
 
         //抽取字段内容中的"剩余工作量:"之后的值
-        //注意，此方法同时存在于Summary类中
         private string ToRemainHumanMonth(string schedule)
         {
             return Regex.Match(schedule, @"(?<=剩余工作量：)\S+").Value;
         }
 
         //抽取字段内容中的"计划投产时间:"之后的值
-        //注意，此方法同时存在于Summary类中
         private string ToEstimatedTimeRemaining(string schedule)
         {
             return Regex.Match(schedule, @"(?<=计划投产时间：)\S+").Value;
@@ -109,11 +110,10 @@ namespace Minerva.Project
         }
 
         //判断一个项目名称是否存在于项目计划中
-        private bool IsExistInProjectPlanList(string projectName)
+        private bool IsExist(string projectName)
         {
             return projectPlanList.Any(projectPlanItem => projectPlanItem.ProjectName.Trim().Equals(projectName));
         }
-
 
         private void RenewProjectPlanItem(ProjectPlanItem projectPlanItem)
         {
@@ -123,21 +123,38 @@ namespace Minerva.Project
             dao.SetCellValue(rowIndex, columnIndex, projectPlanItem.EstimatedTimeRemaining);
         }
 
-        //更新项目计划文件，将结果追加于两个新的sheet中并保存文件
+        //更新项目计划文件
         public ProjectPlan ReNewProjectPlan()
         {
-            dao.RemoveAt("周报(存在)项目计划(不存在)");
-            dao.SetCellValues(ignoredProjectList).Name("周报(存在)项目计划(不存在)").Fit();
-            dao.Save();
+            //对于匹配成功的项目计划，根据周报更新其剩余工作量及预计投产时间
+            existedProjectPlanList.ForEach(item => RenewProjectPlanItem(item));
 
+            //将结果追加于3个新的sheet中并保存文件
             dao.RemoveAt("周报(不存在)项目计划(存在)");
-            dao.SetCellValues(notExistProjectList).Name("周报(不存在)项目计划(存在)").Fit();
+            dao.SetCellValues(ignoredProjectPlanList)
+                .Name("周报(不存在)项目计划(存在)")
+                .Fit();
             dao.Save();
 
-            ExcelDAO<WeeklyItem> yet_another_dao = new ExcelDAO<WeeklyItem>(Env.Instance.ProjectPlanPath);
-            yet_another_dao.RemoveAt("需求与立项中清单");
-            yet_another_dao.SetCellValues(markableWeeklyList).Name("需求与立项中清单").Fit();
-            yet_another_dao.Save();
+            dao.Close();
+
+
+            ExcelDAO<WeeklyItem> weeklyItemDAO = new ExcelDAO<WeeklyItem>(Env.Instance.ProjectPlan);
+
+            weeklyItemDAO.RemoveAt("周报(存在)项目计划(不存在)");
+            weeklyItemDAO.SetCellValues(ignoredWeeklyItemList)
+                .Name("周报(存在)项目计划(不存在)")
+                .Fit();
+            weeklyItemDAO.Save();
+
+
+            weeklyItemDAO.RemoveAt("需求与立项中清单");
+            weeklyItemDAO.SetCellValues(markableWeeklyItemList)
+                .Name("需求与立项中清单")
+                .Fit();
+            weeklyItemDAO.Save();
+
+            weeklyItemDAO.Close();
 
             return this;
         }

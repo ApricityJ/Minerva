@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using CommandLine;
 
 
@@ -18,11 +14,14 @@ namespace Minerva.Main
 
         static void Phase1()
         {
+            DevWeeklies devWeeklies = new DevWeeklies();
+            ProjectPlan projectPlan = new ProjectPlan();
+            projectPlan.CompareWith(devWeeklies).ReNewProjectPlan();
             //Weekly weekly = new Weekly();
             //ProjectPlan plan = new ProjectPlan();
             //plan.CompareWith(weekly).ReNewProjectPlan();
-            WeeklySummary summary = new WeeklySummary();
-            summary.Summarize();
+            //WeeklySummary summary = new WeeklySummary();
+            //summary.Summarize();
         }
 
         static void Phase2()

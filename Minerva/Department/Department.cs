@@ -54,7 +54,7 @@ namespace Minerva.Department
         //IsCompletelyMatch("个人金融部","个人金融部") -> true
         //IsCompletelyMatch("个人金融部","个金") -> true
         //IsCompletelyMatch("个人金融部","个人业务部") -> false
-        private bool IsCompletelyMatch(string department,string nameToMatch)
+        private bool IsCompletelyMatch(string department, string nameToMatch)
         {
             return nameToMatch.All(c => department.Contains(c));
         }

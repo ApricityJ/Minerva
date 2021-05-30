@@ -15,7 +15,7 @@ namespace Minerva.DAO
     /// 每一个类的实例对应一个具体的Excel文件
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    class ExcelDAO<T>
+    public class ExcelDAO<T>
     {
         private readonly string excelPath;
         private readonly Workbook workbook;
@@ -279,6 +279,11 @@ namespace Minerva.DAO
         {
             workbook.Save(newFilePath);
             return this;
+        }
+
+        public void Close()
+        {
+            this.workbook.Dispose();
         }
     }
 }

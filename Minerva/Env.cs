@@ -1,13 +1,34 @@
 ﻿using System.IO;
-
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Minerva
 {
+    using Department;
     /// <summary>
     /// 运行环境类，用于存储运行中所需要的常量，全局唯一
     /// </summary>
     class Env
     {
+        private static Dictionary<InnerDepartment, string> keyWordMap = new Dictionary<InnerDepartment, string>()
+        {
+            {InnerDepartment.DevDivision1st,"*一部*" },
+            {InnerDepartment.DevDivision2nd,"*二部*" },
+            {InnerDepartment.DevDivision3rd,"*三部*" },
+            {InnerDepartment.DevDataSci,"*数据分析*" },
+            {InnerDepartment.Test,"*测试*" },
+            {InnerDepartment.System,"*系统*" },
+            {InnerDepartment.Network,"*网络*" },
+            {InnerDepartment.Product,"*产品*" }
+        };
+
+
+        private Dictionary<InnerDepartment, string> weeklyMap = new Dictionary<InnerDepartment, string>()
+        {
+
+        };
+
+
         private Env()
         {
         }
@@ -15,9 +36,9 @@ namespace Minerva
         public static Env Instance { get; } = new Env();
 
         //根据关键词搜索文件
-        private string FindFileByName(string keyWord)
+        private string FindFileBy(string keyWord)
         {
-            DirectoryInfo directory = new DirectoryInfo(WeeklyReportsDir);
+            DirectoryInfo directory = new DirectoryInfo(RootDir);
             FileInfo[] files = directory.GetFiles(keyWord, SearchOption.AllDirectories);
             if (files.Length > 0)
             {
@@ -26,31 +47,26 @@ namespace Minerva
             return "";
         }
 
-        public void Initialize(string dir,int phase)
+        public void Initialize(string dir, int phase)
         {
-            WeeklyReportsDir = dir;
+            RootDir = dir;
             Phase = phase;
-            ProjectPlanPath = FindFileByName("*项目*");
-            ReportDivsion1st = FindFileByName("*开发一部*");
-            ReportDivsion2nd = FindFileByName("*开发二部*");
-            ReportDivsion3rd = FindFileByName("*开发三部*");
-            ReportDivsionData = FindFileByName("*数据分析部*");
-            ReportTest = FindFileByName("*测试*");
-            ReportSystem = FindFileByName("*系统*");
-            ReportNet = FindFileByName("*网络*");
-            ReportProduct = FindFileByName("*产品部*");
+
+            keyWordMap.ToList().ForEach(pair =>
+            {
+                weeklyMap.Add(pair.Key, FindFileBy(pair.Value));
+            });
+
+            ProjectPlan = FindFileBy("*项目*");
         }
 
-        public string WeeklyReportsDir { get; set; }
-        public string ProjectPlanPath { get; set; }
-        public string ReportDivsion1st { get; set; }
-        public string ReportDivsion2nd { get; set; }
-        public string ReportDivsion3rd { get; set; }
-        public string ReportDivsionData { get; set; }
-        public string ReportTest { get; set; }
-        public string ReportSystem { get; set; }
-        public string ReportNet { get; set; }
-        public string ReportProduct { get; set; }
+        public string ToWeeklyPath(InnerDepartment department)
+        {
+            return weeklyMap[department];
+        }
+
+        public string RootDir { get; set; }
+        public string ProjectPlan { get; set; }
 
         public int SummarySequence { get; set; }
 
