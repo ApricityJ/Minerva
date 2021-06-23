@@ -76,11 +76,13 @@
     <Compile Include="Summary\SummaryDocument.cs" />
     <Compile Include="Summary\SummaryItem.cs" />
     <Compile Include="Util\DateUtil.cs" />
+    <Compile Include="Weekly\AbstractWeeklies.cs" />
+    <Compile Include="Weekly\BaseWeeklies.cs" />
+    <Compile Include="Weekly\IntegratedWeeklies.cs" />
     <Compile Include="Weekly\BaseWeekly.cs" />
+    <Compile Include="Weekly\DevWeeklies.cs" />
     <Compile Include="Weekly\DevWeekly.cs" />
-    <Compile Include="Weekly\Weekly.cs" />
     <Compile Include="Weekly\WeeklyItem.cs" />
-    <Compile Include="Weekly\Weelies.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

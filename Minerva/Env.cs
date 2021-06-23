@@ -67,9 +67,7 @@ namespace Minerva
 
         public string RootDir { get; set; }
         public string ProjectPlan { get; set; }
-
         public int SummarySequence { get; set; }
-
         public int Phase { get; set; }
 
 

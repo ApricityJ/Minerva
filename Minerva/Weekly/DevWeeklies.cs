@@ -14,44 +14,59 @@ namespace Minerva.Weekly
     /// 在第一步，提取周报与项目计划比较中使用
     /// </summary>
 
-    class DevWeeklies : AbstractWeelies
+    class DevWeeklies : BaseWeeklies
     {
 
         public List<WeeklyItem> CurrentWeekReleases { get; set; }
         public List<WeeklyItem> NextWeekReleasePlans { get; set; }
-
-        public List<DevWeekly> DevWeeklyList { get; set; }
         public List<WeeklyItem> ProjectWorkList { get; set; }
 
 
         public DevWeeklies()
         {
-            DevWeeklyList = new List<DevWeekly>();
+            WeeklySet = new Dictionary<InnerDepartment, BaseWeekly>();
+
+            CurrentWeekWorks = new List<WeeklyItem>();
+            UnnormalCases = new List<WeeklyItem>();
+            CurrentWeekReleases = new List<WeeklyItem>();
+            NextWeekReleasePlans = new List<WeeklyItem>();
+
             ProjectWorkList = new List<WeeklyItem>();
         }
 
 
         //加载周报
-        public override AbstractWeelies LoadWeekly()
+        public override AbstractWeeklies Load()
         {
             foreach (InnerDepartment department in Enum.GetValues(typeof(InnerDepartment)))
             {
                 if (department.ToString().StartsWith("Dev"))
                 {
-                    WeeklyCollection.Add(department, new BaseWeekly(Env.Instance.ToWeeklyPath(department)));
+                    WeeklySet.Add(department, new DevWeekly(Env.Instance.ToWeeklyPath(department)));
                 }
             }
             return this;
         }
 
         //筛选项目相关的工作内容
-        public override AbstractWeelies Summarize()
+        public override AbstractWeeklies Summarize()
         {
-            //把1，2，3，4部的本周工作报告拼在一起
-            DevWeeklyList.ForEach(w => ProjectWorkList.Concat(w.CurrentWeekWork));
+
+            WeeklySet.ToList()
+              .ForEach(w => CurrentWeekWorks = CurrentWeekWorks.Concat(w.Value.CurrentWeekWork).ToList());
+
+            WeeklySet.ToList()
+                .ForEach(w => UnnormalCases = UnnormalCases.Concat(w.Value.UnnormalCase).ToList());
+
+            WeeklySet.ToList()
+                .ForEach(w => CurrentWeekReleases = CurrentWeekReleases.Concat(((DevWeekly)w.Value).CurrentWeekRelease).ToList());
+
+            WeeklySet.ToList()
+                .ForEach(w => NextWeekReleasePlans = NextWeekReleasePlans.Concat(((DevWeekly)w.Value).NextWeekReleasePlan).ToList());
+
 
             //筛选项目类工作（用于与工作计划交互匹配）
-            ProjectWorkList = ProjectWorkList.Where(item => item.IsProjectWork())
+            ProjectWorkList = CurrentWeekWorks.Where(w => w.IsProjectWork())
                 .ToList();
 
             return this;
@@ -62,8 +77,21 @@ namespace Minerva.Weekly
         public bool IsExist(string projectName)
         {
             return ProjectWorkList.Any(item => item.Name.Trim().Equals(projectName.Trim()));
-
         }
 
+        public override AbstractWeeklies Sort()
+        {
+            CurrentWeekWorks.Sort();
+            UnnormalCases.Sort();
+            CurrentWeekReleases.Sort();
+            NextWeekReleasePlans.Sort();
+
+            return this;
+        }
+
+        public override AbstractWeeklies Save()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

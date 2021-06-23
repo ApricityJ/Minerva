@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System;
 
 namespace Minerva.Project
 {
@@ -25,7 +26,9 @@ namespace Minerva.Project
         public ProjectPlan()
         {
             dao = new ExcelDAO<ProjectPlanItem>(Env.Instance.ProjectPlan);
-            
+
+            Console.WriteLine("项目计划 --> 开始读取 : " + Env.Instance.ProjectPlan);
+
             //读取项目计划excel生成项目列表
             projectPlanList = dao.SelectSheetAt(0)
                 .Skip(2)
@@ -33,6 +36,9 @@ namespace Minerva.Project
                 //已结项和已投产的项目无需考虑
                 .Where(item=>!item.IsReleased())
                 .ToList();
+
+            Console.WriteLine("项目计划 -->  读取结束，条数 : " + projectPlanList.Count());
+
             projectName = ToProjectName();
         }
 
@@ -48,6 +54,9 @@ namespace Minerva.Project
         //对于 [周报] 中立项和需求中的项目，存放 markableWeeklyItemList，留待人工判断
         public ProjectPlan CompareWith(DevWeeklies weeklies)
         {
+            Console.WriteLine("周报 --> 项目类工作 : " + weeklies.ProjectWorkList.Count);
+            Console.WriteLine("项目计划 --> 对比开始");
+
             //尝试将周报中的项目名称模糊匹配为项目计划中的项目名称
             weeklies.ProjectWorkList.ForEach(item => { item.Name = projectName.TryToProjectPlanName(item.Name); });
 
@@ -68,6 +77,13 @@ namespace Minerva.Project
             markableWeeklyItemList = weeklies.ProjectWorkList
                 .Where(item => item.IsProjectApproved())
                 .ToList();
+
+            Console.WriteLine("项目计划 --> 对比结束 : ");
+            Console.WriteLine("项目计划 --> [项目计划][存在]   and [周报][存在]   : " + existedProjectPlanList.Count);
+            Console.WriteLine("项目计划 --> [项目计划][不存在] and [周报][存在]   : " + ignoredWeeklyItemList.Count);
+            Console.WriteLine("项目计划 --> [项目计划][存在]   and [周报][不存在] : " + ignoredProjectPlanList.Count);
+            Console.WriteLine("项目计划 --> 立项和需求中的项目     : " + markableWeeklyItemList.Count);
+
 
             return this;
         }
@@ -127,8 +143,10 @@ namespace Minerva.Project
         public ProjectPlan ReNewProjectPlan()
         {
             //对于匹配成功的项目计划，根据周报更新其剩余工作量及预计投产时间
+            Console.WriteLine("项目计划 --> 更新: 剩余工作量及投产时间");
             existedProjectPlanList.ForEach(item => RenewProjectPlanItem(item));
 
+            Console.WriteLine("项目计划 --> 更新sheet: 周报(不存在)项目计划(存在)");
             //将结果追加于3个新的sheet中并保存文件
             dao.RemoveAt("周报(不存在)项目计划(存在)");
             dao.SetCellValues(ignoredProjectPlanList)
@@ -138,7 +156,7 @@ namespace Minerva.Project
 
             dao.Close();
 
-
+            Console.WriteLine("项目计划 --> 更新sheet: 周报(存在)项目计划(不存在)");
             ExcelDAO<WeeklyItem> weeklyItemDAO = new ExcelDAO<WeeklyItem>(Env.Instance.ProjectPlan);
 
             weeklyItemDAO.RemoveAt("周报(存在)项目计划(不存在)");
@@ -147,7 +165,7 @@ namespace Minerva.Project
                 .Fit();
             weeklyItemDAO.Save();
 
-
+            Console.WriteLine("项目计划 --> 更新sheet: 需求与立项中清单");
             weeklyItemDAO.RemoveAt("需求与立项中清单");
             weeklyItemDAO.SetCellValues(markableWeeklyItemList)
                 .Name("需求与立项中清单")

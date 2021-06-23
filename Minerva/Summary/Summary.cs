@@ -20,12 +20,12 @@ namespace Minerva.Summary
 
 
 
-        public Summary(Weekly weekly)
+        public Summary(BaseWeekly weekly)
         {
-            FrontDevSummaryList = ToSummaryList(DepartmentType.FRONT, weekly.WeeklyDev);
-            FrontDataSummaryList = ToSummaryList(DepartmentType.FRONT, weekly.WeeklyData);
-            BackDevSummaryList = ToSummaryList(DepartmentType.BACK, weekly.WeeklyDev);
-            BackDataSummaryList = ToSummaryList(DepartmentType.BACK, weekly.WeeklyData);
+            //FrontDevSummaryList = ToSummaryList(DepartmentType.FRONT, weekly.WeeklyDev);
+            //FrontDataSummaryList = ToSummaryList(DepartmentType.FRONT, weekly.WeeklyData);
+            //BackDevSummaryList = ToSummaryList(DepartmentType.BACK, weekly.WeeklyDev);
+            //BackDataSummaryList = ToSummaryList(DepartmentType.BACK, weekly.WeeklyData);
         }
 
         private string ToRemainHumanMonth(string schedule)

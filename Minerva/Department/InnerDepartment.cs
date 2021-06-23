@@ -12,8 +12,8 @@
     /// 
     /// 这是一种偷懒的做法，不偷懒应该：
     /// 1、定义一个InnerDept的实体类，属性包含id，名称，是否开发部门，etc
-    /// 2、定义一个叫ITAndProductManagementDept的类，用来管理这些部门
-    /// 一想就觉得手酸，下次一定
+    /// 2、定义一个叫IT&PMDept的类，用来管理这些部门
+    /// 一想就觉得不乐意，下次一定
     /// </summary>
     public enum InnerDepartment
     {

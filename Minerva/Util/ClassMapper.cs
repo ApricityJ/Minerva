@@ -13,7 +13,7 @@ namespace Minerva.Util
     /// </summary>
     class ClassMapper
     {
-        public static readonly Dictionary<Type, Dictionary<int,string>> ClassMap = new Dictionary<Type, Dictionary<int, string>>();
+        public static readonly Dictionary<Type, Dictionary<int, string>> ClassMap = new Dictionary<Type, Dictionary<int, string>>();
 
 
         static ClassMapper()
@@ -23,13 +23,14 @@ namespace Minerva.Util
                 { 0, "Sequence" },
                 { 1, "Name" },
                 { 2, "Type" },
-                { 3, "CurrentProgress" },
-                { 4, "HostDivision" },
-                { 5, "CoHostDivision" },
-                { 6, "BizDepartment" },
-                { 7, "ResponsiblePersonnel" },
-                { 8, "Participants" },
-                { 9, "Schedule" }
+                { 3, "ProjectId" },
+                { 4, "CurrentProgress" },
+                { 5, "HostDivision" },
+                { 6, "CoHostDivision" },
+                { 7, "BizDepartment" },
+                { 8, "ResponsiblePersonnel" },
+                { 9, "Participants" },
+                { 10, "Schedule" }
             };
 
             ClassMap.Add(typeof(WeeklyItem), WeeklyItemMap);

@@ -14,28 +14,24 @@ namespace Minerva.Main
 
         static void Phase1()
         {
+            Console.WriteLine("phase 1 start ... ");
+
             DevWeeklies devWeeklies = new DevWeeklies();
-            ProjectPlan projectPlan = new ProjectPlan();
-            projectPlan.CompareWith(devWeeklies).ReNewProjectPlan();
-            //Weekly weekly = new Weekly();
-            //ProjectPlan plan = new ProjectPlan();
-            //plan.CompareWith(weekly).ReNewProjectPlan();
-            //WeeklySummary summary = new WeeklySummary();
-            //summary.Summarize();
+            devWeeklies.Load().Summarize();
+
+            new ProjectPlan()
+                .CompareWith(devWeeklies)
+                .ReNewProjectPlan();
         }
 
         static void Phase2()
         {
-            Weekly weekly = new Weekly();
-            weekly.ToSortedWeeklyList().Summarize();
+
         }
 
         static void Phase3()
         {
-            Weekly weekly = new Weekly();
-            Summary summary = new Summary(weekly);
-            SummaryDocument document = new SummaryDocument(summary);
-            document.Perform();
+        
         }
 
         static void Main(string[] args)
@@ -57,6 +53,9 @@ namespace Minerva.Main
                 default: Console.WriteLine("please enter 1,2 or 3..."); break;
 
             }
+
+            Console.WriteLine("press any key to exit ...");
+            Console.ReadKey();
 
 
 

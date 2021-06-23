@@ -12,3 +12,17 @@ D:\workspace\vs\Minerva\Minerva\Minerva\obj\Debug\Minerva.pdb
 D:\workspace\vs\Minerva\Minerva\Minerva\bin\Debug\CommandLine.dll
 D:\workspace\vs\Minerva\Minerva\Minerva\bin\Debug\CommandLine.xml
 D:\workspace\vs\Minerva\Minerva\Minerva\obj\Debug\Minerva.csproj.AssemblyReference.cache
+C:\Users\Z\Source\Repos\Minerva\Minerva\obj\Debug\Minerva.csproj.AssemblyReference.cache
+C:\Users\Z\Source\Repos\Minerva\Minerva\obj\Debug\Minerva.csproj.CoreCompileInputs.cache
+C:\Users\Z\Source\Repos\Minerva\Minerva\obj\Debug\Minerva.exe
+C:\Users\Z\Source\Repos\Minerva\Minerva\obj\Debug\Minerva.pdb
+C:\Users\Z\Source\Repos\Minerva\Minerva\bin\Debug\Minerva.exe.config
+C:\Users\Z\Source\Repos\Minerva\Minerva\bin\Debug\Minerva.exe
+C:\Users\Z\Source\Repos\Minerva\Minerva\bin\Debug\Minerva.pdb
+C:\Users\Z\Source\Repos\Minerva\Minerva\bin\Debug\Aspose.Cells.dll
+C:\Users\Z\Source\Repos\Minerva\Minerva\bin\Debug\Aspose.Words.dll
+C:\Users\Z\Source\Repos\Minerva\Minerva\bin\Debug\CommandLine.dll
+C:\Users\Z\Source\Repos\Minerva\Minerva\bin\Debug\Aspose.Cells.xml
+C:\Users\Z\Source\Repos\Minerva\Minerva\bin\Debug\Aspose.Words.xml
+C:\Users\Z\Source\Repos\Minerva\Minerva\bin\Debug\CommandLine.xml
+C:\Users\Z\Source\Repos\Minerva\Minerva\obj\Debug\Minerva.csproj.CopyComplete
