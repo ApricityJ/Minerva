@@ -1,6 +1,6 @@
-﻿namespace Minerva.Summary
+﻿namespace Minerva.Brief
 {
-    internal class SummaryItem
+    internal class BriefItem
     {
         public int Sequence { get; set; }
         public string ProjectName { get; set; }
@@ -8,9 +8,6 @@
         public string BizDepartment { get; set; }
         public string RemainHumanMonth { get; set; }
         public string EstimatedTimeRemaining { get; set; }
-
-
-
 
     }
 }

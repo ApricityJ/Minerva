@@ -25,7 +25,5 @@ namespace Minerva.Weekly
 
         public abstract AbstractWeeklies Sort();
 
-        public abstract AbstractWeeklies Save();
-
     }
 }

@@ -14,6 +14,14 @@ namespace Minerva.Weekly
         public List<WeeklyItem> CurrentWeekWorks { get; set; }
         public List<WeeklyItem> UnnormalCases { get; set; }
 
+        public BaseWeeklies()
+        {
+            WeeklySet = new Dictionary<InnerDepartment, BaseWeekly>();
+
+            CurrentWeekWorks = new List<WeeklyItem>();
+            UnnormalCases = new List<WeeklyItem>();
+        }
+
         public override AbstractWeeklies Load()
         {
             foreach (InnerDepartment department in Enum.GetValues(typeof(InnerDepartment)))
@@ -30,10 +38,10 @@ namespace Minerva.Weekly
         public override AbstractWeeklies Summarize()
         {
             WeeklySet.ToList()
-                .ForEach(w => CurrentWeekWorks.Concat(w.Value.CurrentWeekWork));
+                .ForEach(w => CurrentWeekWorks = CurrentWeekWorks.Concat(w.Value.CurrentWeekWork).ToList());
 
             WeeklySet.ToList()
-                .ForEach(w => UnnormalCases.Concat(w.Value.UnnormalCase));
+                .ForEach(w => UnnormalCases = UnnormalCases.Concat(w.Value.UnnormalCase).ToList());
 
             return this;
         }
@@ -47,11 +55,5 @@ namespace Minerva.Weekly
             return this;
         }
 
-
-
-        public override AbstractWeeklies Save()
-        {
-            throw new NotImplementedException();
-        }
     }
 }

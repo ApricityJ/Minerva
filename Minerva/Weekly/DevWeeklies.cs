@@ -11,7 +11,7 @@ namespace Minerva.Weekly
     /// <summary>
     /// 开发周报类
     /// 用于处理周报中项目类内容
-    /// 在第一步，提取周报与项目计划比较中使用
+    /// 在第一步，提取 [周报] 与 [项目计划] 比较中使用
     /// </summary>
 
     class DevWeeklies : BaseWeeklies
@@ -21,17 +21,22 @@ namespace Minerva.Weekly
         public List<WeeklyItem> NextWeekReleasePlans { get; set; }
         public List<WeeklyItem> ProjectWorkList { get; set; }
 
+        //区分数据分析部与开发部的每周工作
+        public List<WeeklyItem> CurrentWeekWorksDataSci;
+        public List<WeeklyItem> CurrentWeekWorksDevDivisions;
 
-        public DevWeeklies()
+
+
+        public DevWeeklies() : base()
         {
-            WeeklySet = new Dictionary<InnerDepartment, BaseWeekly>();
 
-            CurrentWeekWorks = new List<WeeklyItem>();
-            UnnormalCases = new List<WeeklyItem>();
             CurrentWeekReleases = new List<WeeklyItem>();
             NextWeekReleasePlans = new List<WeeklyItem>();
 
             ProjectWorkList = new List<WeeklyItem>();
+
+            CurrentWeekWorksDataSci = new List<WeeklyItem>();
+            CurrentWeekWorksDevDivisions = new List<WeeklyItem>();
         }
 
 
@@ -69,6 +74,11 @@ namespace Minerva.Weekly
             ProjectWorkList = CurrentWeekWorks.Where(w => w.IsProjectWork())
                 .ToList();
 
+            //区分分析部与开发部的工作（用于计算[分析部/开发部]*[前台/后台]共计4张表）
+            CurrentWeekWorksDevDivisions = ProjectWorkList.Where(w => w.HostDivision.Contains("开发")).ToList();
+            CurrentWeekWorksDataSci = ProjectWorkList.Where(w => w.HostDivision.Contains("数据")).ToList();
+            
+
             return this;
         }
 
@@ -89,9 +99,5 @@ namespace Minerva.Weekly
             return this;
         }
 
-        public override AbstractWeeklies Save()
-        {
-            throw new NotImplementedException();
-        }
     }
 }

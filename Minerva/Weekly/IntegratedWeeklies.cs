@@ -5,6 +5,7 @@ using System.IO;
 
 namespace Minerva.Weekly
 {
+    using DAO;
     using Department;
     using Util;
 
@@ -13,16 +14,13 @@ namespace Minerva.Weekly
     /// 用于生成 [科技与产品管理部周报(#Year#)年第(#Week#)期.et]
     /// </summary>
 
-    class IntegratedWeeklies : AbstractWeeklies
+    class IntegratedWeeklies : DevWeeklies
     {
 
         public DevWeeklies DevelopWeeklies { get; set; }
 
         public BaseWeeklies NonDevelopWeeklies { get; set; }
 
-
-        private string template = "科技与产品管理部周报(#Year#)年第(#Week#)期.et";
-        private string targetPath;
 
         public IntegratedWeeklies()
         {
@@ -31,25 +29,14 @@ namespace Minerva.Weekly
             DevelopWeeklies = new DevWeeklies();
             NonDevelopWeeklies = new BaseWeeklies();
 
+            CurrentWeekWorks = new List<WeeklyItem>();
+            UnnormalCases = new List<WeeklyItem>();
+
         }
 
-        //生成目标周报文件路径，用实际的年和周替换
-        private void ToTargetPath()
-        {
-            targetPath = template.Replace("#Year#", DateUtil.ToCurrentYear())
-                .Replace("#Week#", DateUtil.ToWeekOfYear().ToString());
-            targetPath = Path.Combine(Env.Instance.RootDir, targetPath);
 
-            if (File.Exists(targetPath))
-            {
-                File.Delete(targetPath);
-            }
-        }
-
-        //按内部机构，逐个Load各部门的周报文件
         public override AbstractWeeklies Load()
         {
-            
             DevelopWeeklies.Load();
             NonDevelopWeeklies.Load();
 
@@ -58,9 +45,19 @@ namespace Minerva.Weekly
 
         public override AbstractWeeklies Summarize()
         {
-
+            
             DevelopWeeklies.Summarize();
+
+            CurrentWeekReleases = DevelopWeeklies.CurrentWeekReleases;
+            NextWeekReleasePlans = DevelopWeeklies.NextWeekReleasePlans;
+
+
             NonDevelopWeeklies.Summarize();
+
+            CurrentWeekWorks = CurrentWeekWorks.Concat(DevelopWeeklies.CurrentWeekWorks)
+                .Concat(NonDevelopWeeklies.CurrentWeekWorks).ToList();
+            UnnormalCases = UnnormalCases.Concat(DevelopWeeklies.UnnormalCases)
+                .Concat(NonDevelopWeeklies.UnnormalCases).ToList();
 
             return this;
         }
@@ -68,15 +65,13 @@ namespace Minerva.Weekly
 
         public override AbstractWeeklies Sort()
         {
-            DevelopWeeklies.Sort();
-            NonDevelopWeeklies.Sort();
+            CurrentWeekWorks.Sort();
+            UnnormalCases.Sort();
+            CurrentWeekReleases.Sort();
+            NextWeekReleasePlans.Sort();
 
             return this;
         }
 
-        public override AbstractWeeklies Save()
-        {
-            throw new NotImplementedException();
-        }
     }
 }

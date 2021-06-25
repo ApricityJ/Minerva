@@ -4,6 +4,7 @@ using Aspose.Cells;
 using System.Reflection;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Data;
 
 namespace Minerva.DAO
 {
@@ -19,6 +20,7 @@ namespace Minerva.DAO
     {
         private readonly string excelPath;
         private readonly Workbook workbook;
+        private WorkbookDesigner designer;
         private int sheetIndex = 0;
         private int skipRows = 0;
 
@@ -258,6 +260,41 @@ namespace Minerva.DAO
                 }
             }
             return new int[2, 1] { { -1 }, { -1 } };
+        }
+
+        //打开一个设计器
+       public ExcelDAO<T> ToDesigner()
+        {
+            designer = new WorkbookDesigner(workbook);
+            return this;
+        }
+
+        public ExcelDAO<T> SetDataSource(Dictionary<string,object> dataSet)
+        {
+            dataSet.ToList().ForEach(p =>
+            {
+                SetDataSource(p.Key, p.Value);
+            });
+            return this;
+        }
+
+        public ExcelDAO<T> SetDataSource(string k,object v)
+        {
+            if (v.GetType() == typeof(DataTable))
+            {
+                designer.SetDataSource((DataTable)v);
+            }
+            else
+            {
+                designer.SetDataSource(k, v);
+            }
+            return this;
+        }
+
+        public ExcelDAO<T> Process()
+        {
+            designer.Process();
+            return this;
         }
 
         //自适应Columns的宽度

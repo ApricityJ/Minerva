@@ -5,13 +5,14 @@ using CommandLine;
 namespace Minerva.Main
 {
 
-    using Minerva.Weekly;
-    using Minerva.Project;
-    using Minerva.Summary;
+    using Weekly;
+    using Project;
+    using Doc;
+
 
     class Program
     {
-
+        //比对项目计划与周报中的项目部分，生成草稿
         static void Phase1()
         {
             Console.WriteLine("phase 1 start ... ");
@@ -22,19 +23,31 @@ namespace Minerva.Main
             new ProjectPlan()
                 .CompareWith(devWeeklies)
                 .ReNewProjectPlan();
+
+            Console.WriteLine("phase 1 complete ... ");
         }
 
+        //生成excel文件 [科技与产品管理部周报]
         static void Phase2()
         {
+            Console.WriteLine("phase 2 start ... ");
 
+            new WeeklyDocument()
+                .PrepareDataSet()
+                .Perform();
+
+            Console.WriteLine("phase 2 complete ... ");
         }
 
+        //生成word文件 [开发工作每周概况]
         static void Phase3()
         {
-        
+            new DevBriefDocument()
+                .PrepareDataSet()
+                .Perform();
         }
 
-        static void Main(string[] args)
+        static void Minerva(string[] args)
         {
             ModifyInMemory.ActivateMemoryPatching();
 
@@ -56,12 +69,11 @@ namespace Minerva.Main
 
             Console.WriteLine("press any key to exit ...");
             Console.ReadKey();
+        }
 
-
-
-
-
-
+        static void Main(string[] args)
+        {
+            Minerva(args);
         }
 
 

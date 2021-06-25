@@ -15,6 +15,11 @@ namespace Minerva.Util
         //将一个List转为一个DataTable，为Word的merge，Cell的生成提供数据源(Aspose不支持List<T>，仅支持DataTable等)
         public static DataTable ToDataTableOfList<T>(List<T> entities,string name)
         {
+            if (entities.Count == 0)
+            {
+                return new DataTable();
+            }
+
             Type type = entities[0].GetType();
             PropertyInfo[] properties = type.GetProperties();
             DataTable dt = new DataTable(name);

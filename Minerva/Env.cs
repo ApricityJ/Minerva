@@ -19,7 +19,7 @@ namespace Minerva
             {InnerDepartment.Test,"*测试*" },
             {InnerDepartment.System,"*系统*" },
             {InnerDepartment.Network,"*网络*" },
-            {InnerDepartment.Product,"*产品*" }
+            {InnerDepartment.Product,"*产品、*" }
         };
 
 
@@ -67,7 +67,7 @@ namespace Minerva
 
         public string RootDir { get; set; }
         public string ProjectPlan { get; set; }
-        public int SummarySequence { get; set; }
+        public int BriefSequence { get; set; }
         public int Phase { get; set; }
 
 

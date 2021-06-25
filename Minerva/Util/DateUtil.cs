@@ -22,5 +22,19 @@ namespace Minerva.Util
             DayOfWeek dow = DayOfWeek.Monday;
             return cal.GetWeekOfYear(DateTime.Now, rule, dow);
         }
+
+        public static string ToWeekEnd()
+        {
+            return DateTime.Now
+                .AddDays(DayOfWeek.Friday - DateTime.Now.DayOfWeek)
+                .ToString("M月dd日");
+        }
+
+        public static string ToWeekBegin()
+        {
+            return DateTime.Now
+                .AddDays(DayOfWeek.Monday - DateTime.Now.DayOfWeek)
+                .ToString("M月dd日");
+        }
     }
 }
