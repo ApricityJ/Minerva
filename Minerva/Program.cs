@@ -9,7 +9,6 @@ namespace Minerva.Main
     using Project;
     using Doc;
 
-
     class Program
     {
         //比对项目计划与周报中的项目部分，生成草稿

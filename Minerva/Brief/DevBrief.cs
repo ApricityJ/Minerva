@@ -8,7 +8,7 @@ namespace Minerva.Brief
     using Minerva.Department;
 
     /// <summary>
-    /// 开发工作每周概况类，用于处理最终开发工作每周概况
+    /// 开发工作每周概况类，用于处理 开发工作每周概况
     /// </summary>
     class DevBrief
     {

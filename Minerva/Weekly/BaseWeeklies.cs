@@ -8,6 +8,9 @@ namespace Minerva.Weekly
 {
     using Department;
 
+    /// <summary>
+    /// 周报集合的基础类，用于处理周报的集合
+    /// </summary>
     class BaseWeeklies : AbstractWeeklies
     {
 

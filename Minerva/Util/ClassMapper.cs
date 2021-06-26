@@ -9,7 +9,9 @@ namespace Minerva.Util
     using Minerva.Project;
 
     /// <summary>
-    /// 
+    /// 类的映射管理
+    /// 用于从Excel的[行]到一个类的[实例]的对照关系转换
+    /// 用于读取[项目计划]及[工作周报]内容
     /// </summary>
     class ClassMapper
     {

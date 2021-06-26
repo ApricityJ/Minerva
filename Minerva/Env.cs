@@ -31,6 +31,7 @@ namespace Minerva
 
         private Env()
         {
+
         }
 
         public static Env Instance { get; } = new Env();
@@ -38,7 +39,12 @@ namespace Minerva
         //根据关键词搜索文件
         private string FindFileBy(string keyWord)
         {
-            DirectoryInfo directory = new DirectoryInfo(RootDir);
+            return FindFileBy(RootDir,keyWord);
+        }
+
+        private string FindFileBy(string dir, string keyWord)
+        {
+            DirectoryInfo directory = new DirectoryInfo(dir);
             FileInfo[] files = directory.GetFiles(keyWord, SearchOption.AllDirectories);
             if (files.Length > 0)
             {
@@ -57,7 +63,7 @@ namespace Minerva
                 weeklyMap.Add(pair.Key, FindFileBy(pair.Value));
             });
 
-            ProjectPlan = FindFileBy("*项目*");
+            ProjectPlan = FindFileBy("tpl", "*项目计划*");
         }
 
         public string ToWeeklyPath(InnerDepartment department)

@@ -9,9 +9,8 @@ namespace Minerva.Weekly
     using Department;
 
     /// <summary>
-    /// 开发周报类
-    /// 用于处理周报中项目类内容
-    /// 在第一步，提取 [周报] 与 [项目计划] 比较中使用
+    /// 开发周报集合类
+    /// 用于处理开发部门的周报内容
     /// </summary>
 
     class DevWeeklies : BaseWeeklies

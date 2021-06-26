@@ -4,7 +4,6 @@
 namespace Minerva.Weekly
 {
 
-
     using Department;
 
     /// <summary>
@@ -23,6 +22,7 @@ namespace Minerva.Weekly
         //汇总
         public abstract AbstractWeeklies Summarize();
 
+        //排序
         public abstract AbstractWeeklies Sort();
 
     }

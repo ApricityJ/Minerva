@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Data;
 using System.IO;
 
 namespace Minerva.Doc
@@ -8,6 +7,10 @@ namespace Minerva.Doc
     using Util;
     using Weekly;
 
+    /// <summary>
+    /// 周报文档类
+    /// 用于生成 "科技与产品管理部周报#Year#年第#Week#期（#WeekEnd#）.xlsx"
+    /// </summary>
     class WeeklyDocument
     {
         public string TemplatePath { get; set; }

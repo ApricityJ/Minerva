@@ -1,5 +1,6 @@
 ﻿namespace Minerva.Brief
 {
+    //开发概况类
     internal class BriefItem
     {
         public int Sequence { get; set; }

@@ -9,8 +9,8 @@ namespace Minerva.Doc
     using DAO;
     using Brief;
     /// <summary>
-    /// 汇总 -- 开发工作每周概况（#WeekBegin#-#WeekEnd#）
-    /// 用于生成上述文档，请注意参考模板
+    /// 开发工作概况文档类
+    /// 用于生成 "开发工作每周概况（#WeekBegin#-#WeekEnd#）.docx"
     /// </summary>
     class DevBriefDocument
     {
